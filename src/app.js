@@ -1,5 +1,15 @@
 const SlackBot = require('slackbots')
 const axios = require('axios')
+const Piii = require("piii");
+const piiiFilters = require("piii-filters");
+
+var meuId = 'UHN2NCEF4'
+
+const piii = new Piii({
+  filters: [
+    ...Object.values(piiiFilters)
+  ]
+});
 
 const bot = new SlackBot({
     token:'xoxb-610927659380-605202731841-SnjbA9emnZI5rdokgzbzCD8A',
@@ -7,15 +17,12 @@ const bot = new SlackBot({
 })
 
 bot.on('start', () =>{
-    var params = {
-        icon_emoji: ':cat'
-    }
+
     bot.postMessageToChannel('general', 
-    'sup mothefuckers', 
-    params)
+    'Im ready guysss')
 })
 
-//Error Handler
+    //Error Handler
 bot.on('error', (err) => console.log(err));
 
 //Message Handler
@@ -24,44 +31,44 @@ bot.on('message', (data)=>{
         return;
     }
 
-
     handleMessage(data)
-    
+
 })
 
 function handleMessage(data){
-    if(!verificaPalavrao(data.text)){
+    
+    if(!piii.has(data.text)){
         postToDuvidas(data.text);
     }else{
         chuckNorris()
     }
 }
 
-function verificaPalavrao(text){
-    var stinkyWords = ["cu", "merda", "porra", "fdp", "filhaDaPuta"];
-    for(i = 0; i < stinkyWords.length; i++){
-        if(text.includes(stinkyWords[i])){
-            return true;
+
+
+
+function returnMessage(id){
+    bot.postMessageToUser(achaNomeDoUsuarioPorId(id), 'Ta bom, vou enviar a duvida pro duvidas por vc ;)')    
+}
+
+
+function achaNomeDoUsuarioPorId(id){
+    for(i = 0; i < bot.users.length;i++){
+        if(bot.users[i].id == id){
+            return bot.users[i].name
         }
     }
-    return false;
 }
 
 function chuckNorris(){
-    var params = {
-        icon_emoji : ':cat:'
-    }
+ 
     axios.get('https://api.chucknorris.io/jokes/random').then(res =>{
         joke = res.data.value
         postToGeneral(`ChuckNorris joke: ${joke}`)
     })
 }
 function postToDuvidas(message){
-    var params = {
-        icon_emoji : ':cat:'
-    }
-
-    bot.postMessageToChannel('duvidas', "------ DUVIDA ------\n" + message, params)
+    bot.postMessageToChannel('duvidas', "------ DUVIDA ------\n" + message)
 }
 
 function postToGeneral(message){
@@ -78,5 +85,4 @@ module.exports = {
     chuckNorris,
     postToDuvidas,
     postToGeneral,
-    verificaPalavrao
 }
