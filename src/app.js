@@ -1,8 +1,10 @@
+//============================================== VARIAVEIS ==============================================
+
 const SlackBot = require('slackbots')
 const axios = require('axios')
-const Piii = require("piii");
-const piiiFilters = require("piii-filters");
-
+const Piii = require("piii")
+const piiiFilters = require("piii-filters")
+const duvidas = Array()
 var meuId = 'UHN2NCEF4'
 
 const piii = new Piii({
@@ -15,6 +17,8 @@ const bot = new SlackBot({
     token:'xoxb-610927659380-605202731841-SnjbA9emnZI5rdokgzbzCD8A',
     name: 'KurisuBot'
 })
+
+//============================================== STATUS ==============================================
 
 bot.on('start', () =>{
 
@@ -30,43 +34,27 @@ bot.on('message', (data)=>{
     if(data.type !== 'message'){
         return;
     }
-
-    handleMessage(data)
-
+    if(data.user != bot.user){
+        handleMessage(data)
+        
+    }
 })
-
+//============================================== AÇÕES ==============================================
 function handleMessage(data){
     
     if(!piii.has(data.text)){
         postToDuvidas(data.text);
+        returnMessage(data.user, 'Ta bom, vou enviar a duvida pro duvidas por vc ;)')
     }else{
         chuckNorris()
+        returnMessage(data.user, 'Sem palavrão. PALHAÇO')
     }
 }
 
-
-
-
-function returnMessage(id){
-    bot.postMessageToUser(achaNomeDoUsuarioPorId(id), 'Ta bom, vou enviar a duvida pro duvidas por vc ;)')    
+function returnMessage(id, resposta){
+    bot.postMessageToUser(achaNomeDoUsuarioPorId(id), resposta)  
 }
 
-
-function achaNomeDoUsuarioPorId(id){
-    for(i = 0; i < bot.users.length;i++){
-        if(bot.users[i].id == id){
-            return bot.users[i].name
-        }
-    }
-}
-
-function chuckNorris(){
- 
-    axios.get('https://api.chucknorris.io/jokes/random').then(res =>{
-        joke = res.data.value
-        postToGeneral(`ChuckNorris joke: ${joke}`)
-    })
-}
 function postToDuvidas(message){
     bot.postMessageToChannel('duvidas', "------ DUVIDA ------\n" + message)
 }
@@ -77,6 +65,23 @@ function postToGeneral(message){
     }
 
     bot.postMessageToChannel('general', message, params)
+}
+
+function chuckNorris(){
+ 
+    axios.get('https://api.chucknorris.io/jokes/random').then(res =>{
+        joke = res.data.value
+        postToGeneral(`ChuckNorris joke: ${joke}`)
+    })
+}
+//============================================== FERRAMENTAS ==============================================
+
+function achaNomeDoUsuarioPorId(id){
+    for(i = 0; i < bot.users.length;i++){
+        if(bot.users[i].id == id){
+            return bot.users[i].name
+        }
+    }
 }
 
 module.exports = {
