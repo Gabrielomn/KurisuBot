@@ -76,4 +76,3 @@ var postToGeneral = function(message){
 
     bot.postMessageToChannel('general', message, params)
 }
-//============================================== FERRAMENTAS ==============================================
