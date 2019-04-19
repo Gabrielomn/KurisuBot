@@ -68,8 +68,9 @@ var lidaComTipoDeDuvida = (data) => {
         var categoria = data.text
         returnMessage(data.user, 'Certo, manda a mensagem que eu encaminho para o dúvidas para vc')
         runningChats[data.user] = function(data){
-            let mensagem = `DUVIDA SOBRE ${categorizer(categoria) + "\n" + data.text}` 
+            let mensagem = `Duvida sobre ${categorizer(categoria) + "\n" + data.text}` 
             postToDuvidas(mensagem)
+            delete runningChats[data.user]
         }
     }
 }
