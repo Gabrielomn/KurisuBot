@@ -18,7 +18,7 @@ bot.on('start', () =>{
 bot.on('error', (err) => console.log(err));
 
 //Message Handler
-bot.on('message', (data)=>{
+bot.on('message', (data) => {
     if(data.type !== 'message'){
         return;
     }
@@ -28,18 +28,32 @@ bot.on('message', (data)=>{
 })
 
 
+
+
+
 var handleMessage = function (data){
     
     if(!piii.has(data.text)){
         id = data.user
-        if(!runningChats.hasOwnProperty(id)){
-            returnMessage(data.user, 'Olar, oq vc precisa?')
-            runningChats[data.user] = handleDuvida
+        if(tools.isChannel(data.channel)){
+            handleChannelMensage(data)
         }else{
-            runningChats[data.user](data)
-        }
+            if(!runningChats.hasOwnProperty(id)){
+                returnMessage(data.user, 'Olar, oq vc precisa?')
+                runningChats[data.user] = handleDuvida
+            }else{
+                runningChats[data.user](data)
+            }
+        }   
     }else{
         returnMessage(data.user, 'Sem palavrão. PALHAÇO')
+    }
+}
+
+var handleChannelMensage = function (data){
+    let msg = tools.knownKeyWords(data.text)
+    if(msg){
+        bot.postEphemeral(data.channel, data.user, msg)
     }
 }
 
@@ -73,6 +87,6 @@ var postToGeneral = function(message){
     var params = {
         icon_emoji : ':cat:'
     }
-
     bot.postMessageToChannel('general', message, params)
 }
+

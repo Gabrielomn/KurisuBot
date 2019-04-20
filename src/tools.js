@@ -1,3 +1,8 @@
+const idChannelGeneral = "CHN2NCVU2"
+const channels =[idChannelGeneral]
+knownLinks = require('./commands.js')
+
+
 var categorizer = function(value){
     if(value == 1){
         return "Orientação a objeto"
@@ -40,10 +45,29 @@ var chuckNorris = function (){
     })
 }
 
+var isChannel = function(string){
+
+    if (channels.includes(string)){
+        return true;
+    }else{
+        return false;
+    }
+}
+
+var knownKeyWords = function(text){
+    if(knownLinks.hasOwnProperty(text)){
+        return knownLinks[text]
+    }else{
+        return ""
+    }
+}
+
 module.exports = {
     getUserNameById,
     listaCategoriasDuvidas,
     iUnderstoodTheDoubt,
     categorizer,
-    chuckNorris
+    chuckNorris,
+    isChannel,
+    knownKeyWords
 }
