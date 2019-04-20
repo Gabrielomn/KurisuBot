@@ -27,10 +27,6 @@ bot.on('message', (data) => {
     }
 })
 
-
-
-
-
 var handleMessage = function (data){
     
     if(!piii.has(data.text)){
@@ -70,6 +66,7 @@ var lidaComTipoDeDuvida = (data) => {
         runningChats[data.user] = function(data){
             let mensagem = `Duvida sobre ${tools.categorizer(categoria) + "\n" + data.text}` 
             postToDuvidas(mensagem)
+            returnMessage(data.user, "Enquanto ninguém responde, pode ser que esse material ajude: \n" + tools.retornaLinkPossivelmenteUtil(tools.categorizer(categoria)))
             delete runningChats[data.user]
         }
     }

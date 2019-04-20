@@ -1,30 +1,43 @@
 const idChannelGeneral = "CHN2NCVU2"
-const channels =[idChannelGeneral]
+const idChannelDuvidas = "CHT932M7T"
+const channels =[idChannelGeneral, idChannelDuvidas]
 knownLinks = require('./commands.js')
 
+const categorias = {
+    1:"Orientação a objeto",
+    2:"Manipulação de coleções",
+    3:"Testes",
+    4:"Sintaxe Java",
+    5:"Composição de Classes",
+    6:"Grasp",
+    7:"Heranças",
+    8:"Interfaces",
+    9:"Exceções",
+    10:"Cronogramas",
+    11:"Outros"
+}
+
+const materiais = require('./links')
+
+var retornaLinkPossivelmenteUtil = function(categoria){
+    return materiais[categoria]
+}
 
 var categorizer = function(value){
-    if(value == 1){
-        return "Orientação a objeto"
-    }else if(value == 2){
-        return "Manipulação de coleções"
-    }else if(value == 3){
-        return "Testes"
-    }else if(value == 4){
-        return "Cronogramas"
-    }else if(value == 5){
-        return "Outros"
-    }
-    
+    return categorias[value]    
 }
 
 var iUnderstoodTheDoubt = (text) => {
-    let expressaoEsperada = /(^[0-5]{1}$)/
+    let expressaoEsperada = /(^[1-9]|10|11$)/
     return expressaoEsperada.test(text)
 }
 
 var listaCategoriasDuvidas = function(){
-    let saida = "1. Orientação a objeto\n2.Manipulação de coleções\n3.Testes\n4.Cronogramas\n5.Outros\n Digaí o tipo de dúvida ;)"
+    let saida = ""
+    for(var key in categorias){
+        saida += key + "." + categorias[key] + "\n"
+    }
+
     return saida
 }
 
@@ -69,5 +82,6 @@ module.exports = {
     categorizer,
     chuckNorris,
     isChannel,
-    knownKeyWords
+    knownKeyWords,
+    retornaLinkPossivelmenteUtil
 }

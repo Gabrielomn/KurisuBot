@@ -1,1 +1,1 @@
-const Kurisu = require('./src/app.js')
+const Kurisu = require('./src/services.js')
