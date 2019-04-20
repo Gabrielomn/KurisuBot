@@ -6,9 +6,4 @@ const knownLinks = {
     "!cronogramaP2": "https://docs.google.com/spreadsheets/d/1jRLgFlpL_xXmd0LqguKHxs3Pb4qVsHN8LQsavVumK-o/edit#gid=2077742481"
 }
 
-const knownNotasDeAulas = {
-    
-}
-
-
 module.exports = knownLinks

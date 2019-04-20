@@ -64,7 +64,7 @@ var lidaComTipoDeDuvida = (data) => {
         var categoria = data.text
         returnMessage(data.user, 'Certo, manda a mensagem que eu encaminho para o dúvidas para vc')
         runningChats[data.user] = function(data){
-            let mensagem = `Duvida sobre ${tools.categorizer(categoria) + "\n" + data.text}` 
+            let mensagem = `-------------------------------------------------------DUVIDA SOBRE ${tools.categorizer(categoria).toUpperCase()}-------------------------------------------------------\n - ${data.text}` 
             postToDuvidas(mensagem)
             returnMessage(data.user, "Enquanto ninguém responde, pode ser que esse material ajude: \n" + tools.retornaLinkPossivelmenteUtil(tools.categorizer(categoria)))
             delete runningChats[data.user]
