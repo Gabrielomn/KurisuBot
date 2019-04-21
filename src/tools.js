@@ -1,6 +1,8 @@
 const idChannelGeneral = "CHN2NCVU2"
 const idChannelDuvidas = "CHT932M7T"
+const bot = require('./config')
 const channels =[idChannelGeneral, idChannelDuvidas]
+const keywords = require('../models/KeyWord')
 knownLinks = require('./commands.js')
 
 const categorias = {
@@ -17,10 +19,17 @@ const categorias = {
     11:"Outros"
 }
 
-const materiais = require('./links')
+const db = require('../models/database')
+
+var teste = function(oi){
+    return oi
+}
 
 var retornaLinkPossivelmenteUtil = function(categoria){
-    return materiais[categoria]
+
+    db.procuraPorKey(categoria).then(resultado => {
+        return resultado.links
+    })
 }
 
 var categorizer = function(value){
@@ -75,6 +84,15 @@ var knownKeyWords = function(text){
     }
 }
 
+var postLink = (user, categoria) => {
+    keywords.findOne({'key': categoria}, (err, res) => {
+        if(err){
+            return
+        }
+        bot.postMessageToUser(user, "Enquanto ninguém responde, pode ser que esse material ajude: \n" + res.link)
+    })
+}
+
 module.exports = {
     getUserNameById,
     listaCategoriasDuvidas,
@@ -83,5 +101,7 @@ module.exports = {
     chuckNorris,
     isChannel,
     knownKeyWords,
-    retornaLinkPossivelmenteUtil
+    retornaLinkPossivelmenteUtil,
+    categorias,
+    postLink
 }
