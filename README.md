@@ -8,3 +8,5 @@ Só um guia de uso basico mesmo:
 reiniciar aplicação toda vez que salvar algo no projeto.
 
 3-)npm start tbm funciona para iniciar o bot, mas não vai ter as funcionabilidades do nodemon.
+
+4-) Para pegar as collections que estão sendo usada é só colar o /data onde está a sua pasta /data do mongo e mesclar as 2.
