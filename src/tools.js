@@ -3,6 +3,7 @@ const idChannelDuvidas = "CHT932M7T"
 const bot = require('./config')
 const channels =[idChannelGeneral, idChannelDuvidas]
 const keywords = require('../models/KeyWord')
+const doubts = require('./../models/Doubt')
 knownLinks = require('./commands.js')
 
 const categorias = {
@@ -93,6 +94,21 @@ var postLink = (user, categoria) => {
     })
 }
 
+var saveDoubt = (msg) => {
+    let date = new Date().getDate()
+    new doubts ({
+        duvida: msg,
+        status: false,
+        resposta: '',
+        createAt: date,
+        updateAt: date
+    }).save().then(()=>{
+        console.log('Nova duvida salva com sucesso.')
+    }).catch(err =>{
+        console.log('Erro no salvamento de duvida: '+err)
+    })
+}
+
 module.exports = {
     getUserNameById,
     listaCategoriasDuvidas,
@@ -103,5 +119,6 @@ module.exports = {
     knownKeyWords,
     retornaLinkPossivelmenteUtil,
     categorias,
-    postLink
+    postLink,
+    saveDoubt
 }
