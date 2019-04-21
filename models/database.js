@@ -2,7 +2,7 @@ const mongoose = require('mongoose')
 
 mongoose.Promise = global.Promise
 mongoose.connect("mongodb://localhost/keywords").then(() => {
-  console.log('Working')
+  console.log('Database connected')
 }).catch(error => {
   console.log('Erro: ' + error)
 })

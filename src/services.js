@@ -2,7 +2,8 @@ piii = require('./StinkyWordsFilter')
 const axios = require('axios')
 const tools = require('./tools.js')
 const idGabriel = "UHN2NCEF4"
-const palavras = require('../models/KeyWord')
+const doubts = require('./../models/Doubt')
+
 
 var runningChats = new Object();
 
@@ -67,6 +68,7 @@ var lidaComTipoDeDuvida = (data) => {
         runningChats[data.user] = function(data){
             let mensagem = `-------------------------------------------------------DUVIDA SOBRE ${tools.categorizer(categoria).toUpperCase()}-------------------------------------------------------\n - ${data.text}` 
             postToDuvidas(mensagem)
+            tools.saveDoubt(data.text)
             tools.postLink(tools.getUserNameById(bot.users, data.user), tools.categorizer(categoria))
             delete runningChats[data.user]
         }
@@ -87,3 +89,4 @@ var postToGeneral = function(message){
     }
     bot.postMessageToChannel('general', message, params)
 }
+

@@ -27,3 +27,4 @@ mongo.model('doubts', DoubtSchema)
 const doubts = mongo.model('doubts')
 
 module.exports = doubts
+
