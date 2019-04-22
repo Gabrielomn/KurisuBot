@@ -66,10 +66,10 @@ var lidaComTipoDeDuvida = (data) => {
         var categoria = data.text
         returnMessage(data.user, 'Certo, manda a mensagem que eu encaminho para o dúvidas para vc')
         runningChats[data.user] = function(data){
-            let mensagem = `-------------------------------------------------------DUVIDA SOBRE ${tools.categorizer(categoria).toUpperCase()}-------------------------------------------------------\n - ${data.text}` 
+            let mensagem = `Nova dúvida sobre: *${tools.categorizer(categoria).toUpperCase()}*\nDuvida: ${data.text}` 
             postToDuvidas(mensagem)
             tools.saveDoubt(data.text)
-            tools.postLink(tools.getUserNameById(bot.users, data.user), tools.categorizer(categoria))
+            tools.findAndSendLinks(tools.getUserNameById(bot.users, data.user), data.text)
             delete runningChats[data.user]
         }
     }

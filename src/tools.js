@@ -89,8 +89,9 @@ var postLink = (user, categoria) => {
     keywords.findOne({'key': categoria}, (err, res) => {
         if(err){
             return
+        }if(res != null){
+            bot.postMessageToUser(user, res.link)
         }
-        bot.postMessageToUser(user, "Enquanto ninguém responde, pode ser que esse material ajude: \n" + res.link)
     })
 }
 
@@ -109,6 +110,35 @@ var saveDoubt = (msg) => {
     })
 }
 
+var findAndSendLinks = (user, msg) => {
+    let results = new Array()
+    msg = titleCase(msg)
+    keywords.find({}, (err, res) => {
+        if(err) return
+        for(i = 0; i < res.length; i++){
+            if(msg.includes(res[i].key)){
+                results.push(res[i].key)
+            }
+        }
+        
+        console.log(results)
+    }).then(() => {
+        bot.postMessageToUser(user, "Enquanto ninguém responde, pode ser que esse material ajude: \n")
+        console.log(results)
+        for(word in results){
+            postLink(user, word)
+        }
+    })
+}
+
+function titleCase(str) {
+    str = str.toLowerCase().split(' ');
+    for (var i = 0; i < str.length; i++) {
+      str[i] = str[i].charAt(0).toUpperCase() + str[i].slice(1); 
+    }
+    return str.join(' ');
+}
+
 module.exports = {
     getUserNameById,
     listaCategoriasDuvidas,
@@ -120,5 +150,6 @@ module.exports = {
     retornaLinkPossivelmenteUtil,
     categorias,
     postLink,
-    saveDoubt
+    saveDoubt,
+    findAndSendLinks
 }
