@@ -5,7 +5,7 @@ const channels =[idChannelGeneral, idChannelDuvidas]
 const keywords = require('../models/KeyWord')
 const doubts = require('./../models/Doubt')
 knownLinks = require('./commands.js')
-
+//
 const categorias = {
     1:"Orientação a objeto",
     2:"Manipulação de coleções",
