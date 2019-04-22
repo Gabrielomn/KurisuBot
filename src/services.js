@@ -69,7 +69,8 @@ var lidaComTipoDeDuvida = (data) => {
             let mensagem = `Nova dúvida sobre: *${tools.categorizer(categoria).toUpperCase()}*\nDuvida: ${data.text}` 
             postToDuvidas(mensagem)
             tools.saveDoubt(data.text)
-            tools.findAndSendLinks(tools.getUserNameById(bot.users, data.user), data.text)
+            //tools.findAndSendLinks(tools.getUserNameById(bot.users, data.user), data.text) //Modo no qual as palavras chaves são procuradas na frase
+            tools.postLink(tools.getUserNameById(bot.users, data.user), tools.categorizer(categoria)) //Modo no qual a categoria é escolhida pelo número
             delete runningChats[data.user]
         }
     }

@@ -5,7 +5,7 @@ const channels =[idChannelGeneral, idChannelDuvidas]
 const keywords = require('../models/KeyWord')
 const doubts = require('./../models/Doubt')
 knownLinks = require('./commands.js')
-//
+
 const categorias = {
     1:"Orientação a objeto",
     2:"Manipulação de coleções",
@@ -113,21 +113,22 @@ var saveDoubt = (msg) => {
 var findAndSendLinks = (user, msg) => {
     let results = new Array()
     msg = titleCase(msg)
+    
     keywords.find({}, (err, res) => {
-        if(err) return
+        if(err) console.log('Erro: '+ err)
         for(i = 0; i < res.length; i++){
             if(msg.includes(res[i].key)){
                 results.push(res[i].key)
             }
         }
         
-        console.log(results)
     }).then(() => {
-        bot.postMessageToUser(user, "Enquanto ninguém responde, pode ser que esse material ajude: \n")
-        console.log(results)
-        for(word in results){
-            postLink(user, word)
-        }
+        if(results.length > 0){
+            bot.postMessageToUser(user, "Enquanto ninguém responde, pode ser que esse material ajude.")
+            for(word in results){
+                postLink(user, results[word])
+            }
+    }
     })
 }
 
