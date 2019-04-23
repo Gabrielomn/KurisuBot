@@ -62,26 +62,21 @@ var handleInitial = function(data){
         runningChats[data.user] = handleCommand
     }else{
         handleDuvida(data)
-        runningChats[data.user] = lidaComTipoDeDuvida
+        runningChats[data.user] = dealsWithDoubtCategory
     }
 }
 
 var handleCommand = function(data){
-    if(tools.saveCommand(data.text)){
-        returnMessage(data.user, 'COMANDO SALVO COM SUCESSO')
-    }else{
-        returnMessage(data.user, 'DEU MERDA JAMELAO')
-    }
-    
+    tools.saveCommand(data.text)
 }
 
 
 var handleDuvida = function(data){
-    returnMessage(data.user, 'Certo, que tipo de dúvida vc tem?\n' + tools.listaCategoriasDuvidas() + "\ndigita apenas o número correspondente plz.")
-    runningChats[data.user] = lidaComTipoDeDuvida
+    returnMessage(data.user, 'Certo, que tipo de dúvida vc tem?\n' + tools.listCategories() + "\ndigita apenas o número correspondente plz.")
+    runningChats[data.user] = dealsWithDoubtCategory
 }
 
-var lidaComTipoDeDuvida = (data) => {
+var dealsWithDoubtCategory = (data) => {
     if(tools.iUnderstoodTheDoubt(data.text)){
         var categoria = data.text
         returnMessage(data.user, 'Certo, manda a mensagem que eu encaminho para o dúvidas para vc')

@@ -7,7 +7,7 @@ const doubts = require('./../models/Doubt')
 const commands = require('./../models/Command');
 knownLinks = require('./commands.js')
 const admins = ["UHN2NCEF4"]
-const categorias = {
+const categories = {
     1:"Orientação a objeto",
     2:"Manipulação de coleções",
     3:"Testes",
@@ -27,7 +27,7 @@ var teste = function(oi){
     return oi
 }
 
-var retornaLinkPossivelmenteUtil = function(categoria){
+var possiblyUsefulLink = function(categoria){
 
     db.procuraPorKey(categoria).then(resultado => {
         return resultado.links
@@ -35,18 +35,18 @@ var retornaLinkPossivelmenteUtil = function(categoria){
 }
 
 var categorizer = function(value){
-    return categorias[value]    
+    return categories[value]    
 }
 
 var iUnderstoodTheDoubt = (text) => {
-    let expressaoEsperada = /(^[1-9]|10|11$)/
-    return expressaoEsperada.test(text)
+    let expected = /(^[1-9]|10|11$)/
+    return expected.test(text)
 }
 
-var listaCategoriasDuvidas = function(){
+var listCategories = function(){
     let saida = ""
-    for(var key in categorias){
-        saida += key + "." + categorias[key] + "\n"
+    for(var key in categories){
+        saida += key + "." + categories[key] + "\n"
     }
 
     return saida
@@ -86,12 +86,22 @@ var knownKeyWords = function(text){
     }
 }
 
+var getLink = (user, categoria, callback) =>{
+    keywords.findOne({'key' : categoria}, (err, res) => {
+        if(err) callback(err, null)
+        if(res != null){
+            link = res.link
+            callback(null, link)
+        }
+    })
+
+}
+
 var postLink = (user, categoria) => {
-    keywords.findOne({'key': categoria}, (err, res) => {
-        if(err){
-            return
-        }if(res != null){
-            bot.postMessageToUser(user,"Enquanto ninguém responde esse link pode ajudar: " +  res.link)
+    getLink(user, categoria, (err, link) => {
+        if(err) console.log("erro: " + err)
+        else{
+            bot.postMessageToUser(user,"Enquanto ninguém responde esse link pode ajudar: " +  link)
         }
     })
 }
@@ -133,10 +143,8 @@ var saveCommand = (msg) => {
             link:c[1]
     }).save().then(() => {
         console.log('novo comando salvo com sucesso')
-        return true;
     }).catch(err => {
         console.log('erro: ' + err)
-        return false
     })
     }
 }
@@ -173,14 +181,14 @@ function titleCase(str) {
 
 module.exports = {
     getUserNameById,
-    listaCategoriasDuvidas,
+    listCategories,
     iUnderstoodTheDoubt,
     categorizer,
     chuckNorris,
     isChannel,
     knownKeyWords,
-    retornaLinkPossivelmenteUtil,
-    categorias,
+    possiblyUsefulLink,
+    categories,
     postLink,
     saveDoubt,
     findAndSendLinks,
