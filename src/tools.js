@@ -4,8 +4,9 @@ const bot = require('./config')
 const channels =[idChannelGeneral, idChannelDuvidas]
 const keywords = require('../models/KeyWord')
 const doubts = require('./../models/Doubt')
+const commands = require('./../models/Command');
 knownLinks = require('./commands.js')
-
+const admins = ["UHN2NCEF4"]
 const categorias = {
     1:"Orientação a objeto",
     2:"Manipulação de coleções",
@@ -90,7 +91,7 @@ var postLink = (user, categoria) => {
         if(err){
             return
         }if(res != null){
-            bot.postMessageToUser(user, res.link)
+            bot.postMessageToUser(user,"Enquanto ninguém responde esse link pode ajudar: " +  res.link)
         }
     })
 }
@@ -108,6 +109,36 @@ var saveDoubt = (msg) => {
     }).catch(err =>{
         console.log('Erro no salvamento de duvida: '+err)
     })
+}
+
+var isCommand = (user, msg) =>  {
+    if(msg.includes('!runConfig')){
+        if(admins.includes(user)){
+            return true;
+        }else{
+            console.log('usuario nao autorizado: ' + getUserNameById(bot.users, user))
+            return false;
+        }
+    }else{
+        return false;
+    }
+}
+
+var saveCommand = (msg) => {
+    let c = msg.split(" ")
+
+    if(c.length == 2){
+        new commands({
+            key:c[0],
+            link:c[1]
+    }).save().then(() => {
+        console.log('novo comando salvo com sucesso')
+        return true;
+    }).catch(err => {
+        console.log('erro: ' + err)
+        return false
+    })
+    }
 }
 
 var findAndSendLinks = (user, msg) => {
@@ -152,5 +183,7 @@ module.exports = {
     categorias,
     postLink,
     saveDoubt,
-    findAndSendLinks
+    findAndSendLinks,
+    isCommand,
+    saveCommand
 }

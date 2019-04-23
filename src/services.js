@@ -38,7 +38,7 @@ var handleMessage = function (data){
         }else{
             if(!runningChats.hasOwnProperty(id)){
                 returnMessage(data.user, 'Olar, oq vc precisa?')
-                runningChats[data.user] = handleDuvida
+                runningChats[data.user] = handleInitial
             }else{
                 runningChats[data.user](data)
             }
@@ -53,6 +53,26 @@ var handleChannelMensage = function (data){
     if(msg){
         bot.postEphemeral(data.channel, data.user, msg)
     }
+}
+
+var handleInitial = function(data){
+    console.log(data.user + " " + data.text)
+    if(tools.isCommand(data.user, data.text)){
+        returnMessage(data.user, 'Certo, digite o comando da seguinte maneira: chave link')
+        runningChats[data.user] = handleCommand
+    }else{
+        handleDuvida(data)
+        runningChats[data.user] = lidaComTipoDeDuvida
+    }
+}
+
+var handleCommand = function(data){
+    if(tools.saveCommand(data.text)){
+        returnMessage(data.user, 'COMANDO SALVO COM SUCESSO')
+    }else{
+        returnMessage(data.user, 'DEU MERDA JAMELAO')
+    }
+    
 }
 
 
