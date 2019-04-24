@@ -5,7 +5,7 @@ const channels =[idChannelGeneral, idChannelDuvidas]
 const keywords = require('../models/KeyWord')
 const doubts = require('./../models/Doubt')
 const commands = require('./../models/Command');
-knownLinks = require('./commands.js')
+const db = require('../models/database')
 const admins = ["UHN2NCEF4"]
 const categories = {
     1:"Orientação a objeto",
@@ -20,13 +20,7 @@ const categories = {
     10:"Cronogramas",
     11:"Outros"
 }
-
-const db = require('../models/database')
-
-var teste = function(oi){
-    return oi
-}
-
+//MÉTODOS DE VALIDAÇÃO/BUSCA
 var possiblyUsefulLink = function(categoria){
 
     db.procuraPorKey(categoria).then(resultado => {
@@ -61,14 +55,6 @@ var getUserNameById = function (lista, id){
     return listaAux[0].name
 }
 
-var chuckNorris = function (){
- 
-    axios.get('https://api.chucknorris.io/jokes/random').then(res =>{
-        joke = res.data.value
-        return joke;
-    })
-}
-
 var isChannel = function(string){
 
     if (channels.includes(string)){
@@ -78,15 +64,68 @@ var isChannel = function(string){
     }
 }
 
-var knownKeyWords = function(text){
-    if(knownLinks.hasOwnProperty(text)){
-        return knownLinks[text]
+var isAdmin = (user) => {
+    return admins.includes(user)
+}
+
+function titleCase(str) {
+    str = str.toLowerCase().split(' ');
+    for (var i = 0; i < str.length; i++) {
+      str[i] = str[i].charAt(0).toUpperCase() + str[i].slice(1); 
+    }
+    return str.join(' ');
+}
+
+//METODOS QUE ATUAM SOBRE OS COMANDOS
+var getCommand = (text, callback) => {
+    commands.findOne({'command' : text}, (err, res) => {
+        if(err) callback(err, null)
+        if(res != null){
+            info = res.info
+            callback(null, info)
+        }else{
+            if(text.charAt(0) === "!"){
+                info = "Comando inexistente"
+                callback(null, info)
+            }
+        }
+    })
+}
+
+var postCommand = (channel, user, text) => {
+    getCommand(text, (err, info) => {
+        if(err) console.log("erro: " + err)
+        else{
+            bot.postEphemeral(channel, user, info)
+        }
+    })
+}
+
+var isCommand = (msg) =>  {
+    if(msg.includes('!runConfig')){
+        return true
     }else{
-        return ""
+        return false;
+    }
+} 
+
+var saveCommand = (msg) => {
+    let c = msg.split(" ")
+
+    if(c.length == 2){
+        new commands({
+            command:c[0],
+            info:c[1]
+    }).save().then(() => {
+        console.log('novo comando salvo com sucesso')
+    }).catch(err => {
+        console.log('erro: ' + err)
+        })
     }
 }
 
-var getLink = (user, categoria, callback) =>{
+//METODOS QUE ATUAM SOBRE AS KEYWORDS
+var getLink = (categoria, callback) =>{
     keywords.findOne({'key' : categoria}, (err, res) => {
         if(err) callback(err, null)
         if(res != null){
@@ -94,11 +133,10 @@ var getLink = (user, categoria, callback) =>{
             callback(null, link)
         }
     })
-
 }
 
 var postLink = (user, categoria) => {
-    getLink(user, categoria, (err, link) => {
+    getLink(categoria, (err, link) => {
         if(err) console.log("erro: " + err)
         else{
             bot.postMessageToUser(user,"Enquanto ninguém responde esse link pode ajudar: " +  link)
@@ -106,6 +144,7 @@ var postLink = (user, categoria) => {
     })
 }
 
+//METODOS QUE ATUAM SOBRE AS DUVIDAS
 var saveDoubt = (msg) => {
     let date = new Date().getDate()
     new doubts ({
@@ -121,77 +160,41 @@ var saveDoubt = (msg) => {
     })
 }
 
-var isCommand = (user, msg) =>  {
-    if(msg.includes('!runConfig')){
-        if(admins.includes(user)){
-            return true;
-        }else{
-            console.log('usuario nao autorizado: ' + getUserNameById(bot.users, user))
-            return false;
-        }
-    }else{
-        return false;
-    }
-}
-
-var saveCommand = (msg) => {
-    let c = msg.split(" ")
-
-    if(c.length == 2){
-        new commands({
-            key:c[0],
-            link:c[1]
-    }).save().then(() => {
-        console.log('novo comando salvo com sucesso')
-    }).catch(err => {
-        console.log('erro: ' + err)
-    })
-    }
-}
-
-var findAndSendLinks = (user, msg) => {
-    let results = new Array()
-    msg = titleCase(msg)
+// var findAndSendLinks = (user, msg) => {
+//     let results = new Array()
+//     msg = titleCase(msg)
     
-    keywords.find({}, (err, res) => {
-        if(err) console.log('Erro: '+ err)
-        for(i = 0; i < res.length; i++){
-            if(msg.includes(res[i].key)){
-                results.push(res[i].key)
-            }
-        }
+//     keywords.find({}, (err, res) => {
+//         if(err) console.log('Erro: '+ err)
+//         for(i = 0; i < res.length; i++){
+//             if(msg.includes(res[i].key)){
+//                 results.push(res[i].key)
+//             }
+//         }
         
-    }).then(() => {
-        if(results.length > 0){
-            bot.postMessageToUser(user, "Enquanto ninguém responde, pode ser que esse material ajude.")
-            for(word in results){
-                postLink(user, results[word])
-            }
-    }
-    })
-}
+//     }).then(() => {
+//         if(results.length > 0){
+//             bot.postMessageToUser(user, "Enquanto ninguém responde, pode ser que esse material ajude.")
+//             for(word in results){
+//                 postLink(user, results[word])
+//             }
+//     }
+//     })
+// }
 
-function titleCase(str) {
-    str = str.toLowerCase().split(' ');
-    for (var i = 0; i < str.length; i++) {
-      str[i] = str[i].charAt(0).toUpperCase() + str[i].slice(1); 
-    }
-    return str.join(' ');
-}
 
 module.exports = {
     getUserNameById,
     listCategories,
     iUnderstoodTheDoubt,
     categorizer,
-    chuckNorris,
     isChannel,
-    knownKeyWords,
     possiblyUsefulLink,
     categories,
     postLink,
     saveDoubt,
-    findAndSendLinks,
     isCommand,
-    saveCommand
+    saveCommand,
+    postCommand,
+    isAdmin
 }

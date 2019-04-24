@@ -49,17 +49,19 @@ var handleMessage = function (data){
 }
 
 var handleChannelMensage = function (data){
-    let msg = tools.knownKeyWords(data.text)
-    if(msg){
-        bot.postEphemeral(data.channel, data.user, msg)
-    }
+    tools.postCommand(data.channel, data.user, data.text)
 }
-
+ 
 var handleInitial = function(data){
     console.log(data.user + " " + data.text)
-    if(tools.isCommand(data.user, data.text)){
-        returnMessage(data.user, 'Certo, digite o comando da seguinte maneira: chave link')
-        runningChats[data.user] = handleCommand
+    if(tools.isCommand(data.text)){
+        if(tools.isAdmin(data.user)){
+            returnMessage(data.user, 'Certo, digite o comando da seguinte maneira: chave link')
+            runningChats[data.user] = handleCommand
+        }else{
+            bot.postMessageToUser(tools.getUserNameById(bot.users, data.user), "Você não está autorizado a utilizar esse comando.")
+            delete runningChats[data.user]
+        }
     }else{
         handleDuvida(data)
         runningChats[data.user] = dealsWithDoubtCategory
@@ -68,6 +70,7 @@ var handleInitial = function(data){
 
 var handleCommand = function(data){
     tools.saveCommand(data.text)
+    delete runningChats[data.user]
 }
 
 
