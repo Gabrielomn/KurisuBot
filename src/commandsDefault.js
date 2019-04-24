@@ -6,4 +6,14 @@ const knownLinks = {
     "!cronogramaP2": "https://docs.google.com/spreadsheets/d/1jRLgFlpL_xXmd0LqguKHxs3Pb4qVsHN8LQsavVumK-o/edit#gid=2077742481"
 }
 
+const commands = require('../models/Command')
+//SÓ RODAR O FOR UMA VEZ PRA GUARDAR OS COMANDOS DEFAULT
+// for(comando in knownLinks){
+//     new commands ({
+//         command: comando,
+//         info: knownLinks[comando]
+//     }).save().then(()=>{
+//         console.log("saved")
+//     })
+// }
 module.exports = knownLinks
