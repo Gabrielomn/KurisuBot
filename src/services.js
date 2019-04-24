@@ -29,6 +29,7 @@ bot.on('message', (data) => {
     }
 })
 
+//============================================== FUNÇÕES ==============================================
 var handleMessage = function (data){
     
     if(!piii.has(data.text)){
@@ -56,8 +57,13 @@ var handleInitial = function(data){
     console.log(data.user + " " + data.text)
     if(tools.isCommand(data.text)){
         if(tools.isAdmin(data.user)){
-            returnMessage(data.user, 'Certo, digite o comando da seguinte maneira: chave link')
-            runningChats[data.user] = handleCommand
+            if(data.text === "!addCommand"){
+                returnMessage(data.user, 'Certo, digite o comando da seguinte maneira: chave link')
+                runningChats[data.user] = saveCommand
+            }else if(data.text === "!delCommand"){
+                returnMessage(data.user, 'Certo, qual comando deseja deletar?')
+                runningChats[data.user] = delCommand
+            }
         }else{
             bot.postMessageToUser(tools.getUserNameById(bot.users, data.user), "Você não está autorizado a utilizar esse comando.")
             delete runningChats[data.user]
@@ -68,12 +74,17 @@ var handleInitial = function(data){
     }
 }
 
-var handleCommand = function(data){
+var saveCommand = function(data){
     tools.saveCommand(data.text)
+    bot.postMessageToUser(tools.getUserNameById(bot.users, data.user),"Comando criado com sucesso.")
     delete runningChats[data.user]
 }
 
-
+var delCommand = (data) => {
+    tools.delCommand(data.text)
+    bot.postMessageToUser(tools.getUserNameById(bot.users, data.user),"Comando deletado com sucesso.")
+    delete runningChats[data.user]
+}
 var handleDuvida = function(data){
     returnMessage(data.user, 'Certo, que tipo de dúvida vc tem?\n' + tools.listCategories() + "\ndigita apenas o número correspondente plz.")
     runningChats[data.user] = dealsWithDoubtCategory

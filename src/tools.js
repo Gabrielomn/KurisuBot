@@ -6,7 +6,7 @@ const keywords = require('../models/KeyWord')
 const doubts = require('./../models/Doubt')
 const commands = require('./../models/Command');
 const db = require('../models/database')
-const admins = ["UHN2NCEF4"]
+const admins = ["UHN2NCEF4", "UHU430TCH"]
 const categories = {
     1:"Orientação a objeto",
     2:"Manipulação de coleções",
@@ -20,6 +20,7 @@ const categories = {
     10:"Cronogramas",
     11:"Outros"
 }
+
 //MÉTODOS DE VALIDAÇÃO/BUSCA
 var possiblyUsefulLink = function(categoria){
 
@@ -100,9 +101,10 @@ var postCommand = (channel, user, text) => {
         }
     })
 }
+var admCommands = ['!addCommand', '!delCommand']
 
 var isCommand = (msg) =>  {
-    if(msg.includes('!runConfig')){
+    if(admCommands.includes(msg)){
         return true
     }else{
         return false;
@@ -117,11 +119,18 @@ var saveCommand = (msg) => {
             command:c[0],
             info:c[1]
     }).save().then(() => {
-        console.log('novo comando salvo com sucesso')
+        console.log('Novo comando salvo com sucesso')
     }).catch(err => {
         console.log('erro: ' + err)
         })
     }
+}
+
+var delCommand = (comando) => {
+    commands.deleteOne({'command' : comando},(err, res) => {
+        if(err) console.log('Erro ao deletar o comando '+comando + ", erro: " + err)
+        console.log("Comando deletado com sucesso")
+    })
 }
 
 //METODOS QUE ATUAM SOBRE AS KEYWORDS
@@ -196,5 +205,6 @@ module.exports = {
     isCommand,
     saveCommand,
     postCommand,
-    isAdmin
+    isAdmin,
+    delCommand
 }
