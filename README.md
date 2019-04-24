@@ -15,4 +15,4 @@ reiniciar aplicação toda vez que salvar algo no projeto.
 
 * Para importar as collections que estão sendo usadas basta usar o comando: mongorestore -d database <caminhoDoSeuRepo/MongoDB/database>
 
-* Para exportar as collections que você está usando basta usar o comando: mongodump -d database -o <caminhoDoSeuRepo/MongoDB/database>
+* Para exportar as collections que você está usando basta usar o comando: mongodump -d database -o <caminhoDoSeuRepo/MongoDB>
