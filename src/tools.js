@@ -77,6 +77,25 @@ function titleCase(str) {
     return str.join(' ');
 }
 
+let update = () =>{
+    findDuvidas((err, duvidas) => {
+        if(err) console.log('erro: ' + err)
+        else{
+            console.log(duvidas)
+        }
+    })
+}
+
+let findDuvidas =  (callback)=>{
+    doubts.find({'status':false}, (err, res) =>{
+        if(err) callback(err, null)
+        if(res!=null){
+            doubt = res
+            callback(null, doubt)
+        }
+    })
+}
+
 //METODOS QUE ATUAM SOBRE OS COMANDOS
 var getCommand = (text, callback) => {
     commands.findOne({'command' : text}, (err, res) => {
@@ -171,7 +190,7 @@ var saveDoubt = (ts, msg, id) => {
     })
 }
 
-var saveAnswer = () => 
+//var saveAnswer = () => 
 // var findAndSendLinks = (user, msg) => {
 //     let results = new Array()
 //     msg = titleCase(msg)
@@ -209,5 +228,7 @@ module.exports = {
     saveCommand,
     postCommand,
     isAdmin,
-    delCommand
+    delCommand,
+    update,
+    findDuvidas
 }

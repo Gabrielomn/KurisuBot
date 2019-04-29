@@ -2,7 +2,7 @@ piii = require('./StinkyWordsFilter')
 const axios = require('axios')
 const tools = require('./tools.js')
 const idGabriel = "UHN2NCEF4"
-
+const acessToken = "xoxp-610927659380-600090422514-610939816692-08171c593ebfe0ab86a30daf2522747b"
 
 var runningChats = new Object();
 
@@ -13,6 +13,10 @@ bot.on('start', () =>{
 
     bot.postMessageToChannel('general', 
     'Im ready guysss')
+    let count = 0;
+    setInterval(()=>{
+      tools.update()
+    }, 10000)
 })
 
     //Error Handler
@@ -31,8 +35,10 @@ bot.on('message', (data) => {
             handleMessage(data)
         }
     }else{
-        if(data.channel === 'CHT932M7T'){
-            tools.saveDoubt(data.ts, data.text)
+        if(data.thread_ts){
+          if(data.channel === 'CHT932M7T'){
+              tools.saveDoubt(data.ts, data.text)
+          }
         }
     }
 })
@@ -104,7 +110,7 @@ var dealsWithDoubtCategory = (data) => {
         returnMessage(data.user, 'Certo, manda a mensagem que eu encaminho para o dúvidas para vc')
         runningChats[data.user] = function(data){
             let mensagem = `Nova dúvida sobre: *${tools.categorizer(categoria).toUpperCase()}*\nDuvida: ${data.text}` 
-            postToDuvidas(mensagem)
+            postToDuvidas(data)
             
             //tools.findAndSendLinks(tools.getUserNameById(bot.users, data.user), data.text) //Modo no qual as palavras chaves são procuradas na frase
             tools.postLink(tools.getUserNameById(bot.users, data.user), tools.categorizer(categoria)) //Modo no qual a categoria é escolhida pelo número
@@ -117,9 +123,26 @@ var returnMessage = function (id, resposta){
     bot.postMessageToUser(tools.getUserNameById(bot.users, id), resposta)  
 }
 
-var postToDuvidas = function (message){
-    bot.postMessageToChannel('duvidas',message)
-}
+var postToDuvidas = async function (data){
+    let msg = data.text
+    let idUser = data.user
+    await bot.postMessageToChannel('duvidas',data.text)
+
+    axios.get('https://slack.com/api/conversations.history?token=' +acessToken +'&channel=CHT932M7T' ).then(res =>{
+      tools.saveDoubt(res.data.messages[0].ts, msg, idUser)
+      console.log(res.data.messages[0])
+    })
+    /* axios.get('https://slack.com/api/conversations.list?token=' + acessToken).then((res) => {
+    
+    for(let i in res.data.channels){
+      if(res.data.channels[i].name == 'duvidas'){
+        console.log(res.data.channels[i])
+      }
+      
+    }    
+
+  })*/
+  }
 
 var postToGeneral = function(message){
     var params = {
