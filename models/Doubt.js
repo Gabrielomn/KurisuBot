@@ -1,6 +1,15 @@
 const mongo = require('./database')
 const DoubtSchema = mongo.Schema({
+    ts: {
+        type: String,
+        require: true,
+        unique: true
+    },
     duvida: {
+        type: String,
+        require: true
+    },
+    idUser:{
         type: String,
         require: true
     },

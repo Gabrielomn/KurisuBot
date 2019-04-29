@@ -154,10 +154,12 @@ var postLink = (user, categoria) => {
 }
 
 //METODOS QUE ATUAM SOBRE AS DUVIDAS
-var saveDoubt = (msg) => {
+var saveDoubt = (ts, msg, id) => {
     let date = new Date().getDate()
     new doubts ({
+        ts: ts,
         duvida: msg,
+        idUser: id,
         status: false,
         resposta: '',
         createAt: date,
@@ -169,6 +171,7 @@ var saveDoubt = (msg) => {
     })
 }
 
+var saveAnswer = () => 
 // var findAndSendLinks = (user, msg) => {
 //     let results = new Array()
 //     msg = titleCase(msg)

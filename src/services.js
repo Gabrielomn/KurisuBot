@@ -2,7 +2,6 @@ piii = require('./StinkyWordsFilter')
 const axios = require('axios')
 const tools = require('./tools.js')
 const idGabriel = "UHN2NCEF4"
-const doubts = require('./../models/Doubt')
 
 
 var runningChats = new Object();
@@ -25,7 +24,16 @@ bot.on('message', (data) => {
         return;
     }
     if(data.user != bot.user){
-        handleMessage(data)
+        if(data.thread_ts){
+            //console.log('AEOOOOOOOOOOOOOOOOOOOO CORNOOOOOOOOOOO')
+            //console.log(data.message)
+        }else{
+            handleMessage(data)
+        }
+    }else{
+        if(data.channel === 'CHT932M7T'){
+            tools.saveDoubt(data.ts, data.text)
+        }
     }
 })
 
@@ -97,7 +105,7 @@ var dealsWithDoubtCategory = (data) => {
         runningChats[data.user] = function(data){
             let mensagem = `Nova dúvida sobre: *${tools.categorizer(categoria).toUpperCase()}*\nDuvida: ${data.text}` 
             postToDuvidas(mensagem)
-            tools.saveDoubt(data.text)
+            
             //tools.findAndSendLinks(tools.getUserNameById(bot.users, data.user), data.text) //Modo no qual as palavras chaves são procuradas na frase
             tools.postLink(tools.getUserNameById(bot.users, data.user), tools.categorizer(categoria)) //Modo no qual a categoria é escolhida pelo número
             delete runningChats[data.user]
