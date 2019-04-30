@@ -196,15 +196,21 @@ var saveDoubt = (ts, msg, id) => {
 
 var closeDoubt = function(data) {
     if(data.text == '!close'){
-        axios.get("https://slack.com/api/conversations.history?token=" + acessToken + "&channel=" + idChannelDuvidas + "&latest=" + data.thread_ts+"&limit=1&inclusive=true").then(res => {
-            console.log(res.data.messages[0].replies)
-        })
-        var newValues = {status: true}
-        let query = {ts: data.thread_ts}
-        doubts.updateOne(query, newValues, (err, res) => {
-        
-            if(err) throw new err
-            console.log( "Sucess Update")
+        axios.get("https://slack.com/api/channels.replies?token=" + acessToken +"&channel=" + idChannelDuvidas + "&thread_ts=" + data.thread_ts).then(res => {
+            let resp = ""
+            for(let i = 1; i < res.data.messages.length-1; i++){
+                if(i != res.data.messages.length-2){
+                    resp += res.data.messages[i].text + " | "
+                }else{
+                    resp += res.data.messages[i].text
+                }
+            }
+            var newValues = {status: true, resposta: resp}
+            let query = {ts: data.thread_ts, status: false}
+            doubts.updateOne(query, newValues, (err, res) => {
+                if(err) throw new err
+                console.log( "Sucess Update")
+            })
         })
     }
 }

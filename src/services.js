@@ -109,11 +109,9 @@ var dealsWithDoubtCategory = (data) => {
         var categoria = data.text
         returnMessage(data.user, 'Certo, manda a mensagem que eu encaminho para o dúvidas para vc')
         runningChats[data.user] = function(data){
-            
-            postToDuvidas(data, categoria)
-            
-            //tools.findAndSendLinks(tools.getUserNameById(bot.users, data.user), data.text) //Modo no qual as palavras chaves são procuradas na frase
             tools.postLink(tools.getUserNameById(bot.users, data.user), tools.categorizer(categoria)) //Modo no qual a categoria é escolhida pelo número
+            postToDuvidas(data, categoria)
+            //tools.findAndSendLinks(tools.getUserNameById(bot.users, data.user), data.text) //Modo no qual as palavras chaves são procuradas na frase
             delete runningChats[data.user]
         }
     }
