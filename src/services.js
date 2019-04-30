@@ -9,24 +9,33 @@ var runningChats = new Object();
 bot = require('./config.js')
 //============================================== STATUS ==============================================
 
+
+bot.on('reaction_added', () =>{
+  console.log('CU MIZERA')
+})
 bot.on('start', () =>{
 
     bot.postMessageToChannel('general', 
     'Im ready guysss')
-    let count = 0;
     setInterval(()=>{
-      tools.update()
+     // tools.update()
     }, 10000)
 })
 
     //Error Handler
 bot.on('error', (err) => console.log(err));
 
+
 //Message Handler
 bot.on('message', (data) => {
+
     if(data.type !== 'message'){
         return;
     }
+    if(data.subtype = 'message_replied'){
+      handleReply(data)
+    }else{
+
     if(data.user != bot.user){
         if(data.thread_ts){
             //console.log('AEOOOOOOOOOOOOOOOOOOOO CORNOOOOOOOOOOO')
@@ -41,9 +50,15 @@ bot.on('message', (data) => {
           }
         }
     }
+  }
 })
 
 //============================================== FUNÇÕES ==============================================
+let handleReply = function(data) {
+    tools.close(data)
+}
+
+
 var handleMessage = function (data){
     
     if(!piii.has(data.text)){
@@ -64,7 +79,7 @@ var handleMessage = function (data){
 }
 
 var handleChannelMensage = function (data){
-    tools.postCommand(data.channel, data.user, data.text)
+    tools.postCommand(data)
 }
  
 var handleInitial = function(data){
@@ -123,26 +138,13 @@ var returnMessage = function (id, resposta){
     bot.postMessageToUser(tools.getUserNameById(bot.users, id), resposta)  
 }
 
-var postToDuvidas = async function (data){
+var postToDuvidas = function (data){
     let msg = data.text
     let idUser = data.user
-    await bot.postMessageToChannel('duvidas',data.text)
-
-    axios.get('https://slack.com/api/conversations.history?token=' +acessToken +'&channel=CHT932M7T' ).then(res =>{
-      tools.saveDoubt(res.data.messages[0].ts, msg, idUser)
-      console.log(res.data.messages[0])
+    bot.postMessageToChannel('duvidas',data.text, (data) => {
+      tools.saveDoubt(data.ts, msg, idUser)
     })
-    /* axios.get('https://slack.com/api/conversations.list?token=' + acessToken).then((res) => {
-    
-    for(let i in res.data.channels){
-      if(res.data.channels[i].name == 'duvidas'){
-        console.log(res.data.channels[i])
-      }
-      
-    }    
-
-  })*/
-  }
+ }
 
 var postToGeneral = function(message){
     var params = {

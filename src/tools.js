@@ -78,15 +78,15 @@ function titleCase(str) {
 }
 
 let update = () =>{
-    findDuvidas((err, duvidas) => {
+    findPendingDoubts((err, duvidas) => {
         if(err) console.log('erro: ' + err)
         else{
-            console.log(duvidas)
+            bot.postMessageToChannel('dev', 'DUVIDAS NAO RESPONDIDAS SEUS CORNOS')
         }
     })
 }
 
-let findDuvidas =  (callback)=>{
+let findPendingDoubts =  (callback)=>{
     doubts.find({'status':false}, (err, res) =>{
         if(err) callback(err, null)
         if(res!=null){
@@ -112,14 +112,25 @@ var getCommand = (text, callback) => {
     })
 }
 
-var postCommand = (channel, user, text) => {
-    getCommand(text, (err, info) => {
+var postCommand = (data) => {
+    console.log(data)
+
+    getCommand(data.text, (err, info) => {
         if(err) console.log("erro: " + err)
         else{
-            bot.postEphemeral(channel, user, info)
+            bot.postEphemeral(data.channel, data.user, info)
         }
     })
+    
 }
+
+var close = function(data) {
+    if(data.text == '!close'){
+        //fechar duvida no banco de dados. placeholder enquanto achamos maneira mais elegante
+        console.log('rolou') //placeholder pra ver se chegou aq
+    }
+}
+
 var admCommands = ['!addCommand', '!delCommand']
 
 var isCommand = (msg) =>  {
@@ -230,5 +241,6 @@ module.exports = {
     isAdmin,
     delCommand,
     update,
-    findDuvidas
+    findPendingDoubts,
+    close
 }
