@@ -18,7 +18,7 @@ const DoubtSchema = mongo.Schema({
         require: true
     },
     resposta:{
-        type: String,
+        type: Array,
         require: false
     },
     createAt:{

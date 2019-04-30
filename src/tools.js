@@ -178,7 +178,7 @@ var postLink = (user, categoria) => {
 
 //METODOS QUE ATUAM SOBRE AS DUVIDAS
 var saveDoubt = (ts, msg, id) => {
-    let date = new Date().getDate()
+    let date = new Date()
     new doubts ({
         ts: ts,
         duvida: msg,
@@ -197,15 +197,12 @@ var saveDoubt = (ts, msg, id) => {
 var closeDoubt = function(data) {
     if(data.text == '!close'){
         axios.get("https://slack.com/api/channels.replies?token=" + acessToken +"&channel=" + idChannelDuvidas + "&thread_ts=" + data.thread_ts).then(res => {
-            let resp = ""
+            let resp = new Array()
             for(let i = 1; i < res.data.messages.length-1; i++){
-                if(i != res.data.messages.length-2){
-                    resp += res.data.messages[i].text + " | "
-                }else{
-                    resp += res.data.messages[i].text
-                }
+                resp.push(res.data.messages[i].text)
             }
-            var newValues = {status: true, resposta: resp}
+            let date = new Date()
+            var newValues = {status: true, resposta: resp, updateAt: date}
             let query = {ts: data.thread_ts, status: false}
             doubts.updateOne(query, newValues, (err, res) => {
                 if(err) throw new err
