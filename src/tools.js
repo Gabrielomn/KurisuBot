@@ -2,10 +2,12 @@ const idChannelGeneral = "CHN2NCVU2"
 const idChannelDuvidas = "CHT932M7T"
 const bot = require('./config')
 const channels =[idChannelGeneral, idChannelDuvidas]
+const acessToken = "xoxp-610927659380-600090422514-610939816692-08171c593ebfe0ab86a30daf2522747b"
 const keywords = require('../models/KeyWord')
 const doubts = require('./../models/Doubt')
 const commands = require('./../models/Command');
 const db = require('../models/database')
+const axios = require('axios')
 const admins = ["UHN2NCEF4", "UHU430TCH"]
 const categories = {
     1:"Orientação a objeto",
@@ -194,9 +196,13 @@ var saveDoubt = (ts, msg, id) => {
 
 var closeDoubt = function(data) {
     if(data.text == '!close'){
+        axios.get("https://slack.com/api/conversations.history?token=" + acessToken + "&channel=" + idChannelDuvidas + "&latest=" + data.thread_ts+"&limit=1&inclusive=true").then(res => {
+            console.log(res.data.messages[0].replies)
+        })
         var newValues = {status: true}
         let query = {ts: data.thread_ts}
         doubts.updateOne(query, newValues, (err, res) => {
+        
             if(err) throw new err
             console.log( "Sucess Update")
         })
