@@ -10,9 +10,6 @@ bot = require('./config.js')
 //============================================== STATUS ==============================================
 
 
-bot.on('reaction_added', () =>{
-  console.log('CU MIZERA')
-})
 bot.on('start', () =>{
 
     bot.postMessageToChannel('general', 
@@ -32,25 +29,19 @@ bot.on('message', (data) => {
     if(data.type !== 'message'){
         return;
     }
+    /*
+    console.log('aq')
+    console.log(data)
     if(data.subtype = 'message_replied'){
       handleReply(data)
-    }else{
-
+    }*/
+   
     if(data.user != bot.user){
-        if(data.thread_ts){
-            //console.log('AEOOOOOOOOOOOOOOOOOOOO CORNOOOOOOOOOOO')
-            //console.log(data.message)
-        }else{
-            handleMessage(data)
-        }
-    }else{
-        if(data.thread_ts){
-          if(data.channel === 'CHT932M7T'){
-              tools.saveDoubt(data.ts, data.text)
-          }
-        }
+        console.log(data)
+         handleMessage(data)
+      
     }
-  }
+  
 })
 
 //============================================== FUNÇÕES ==============================================
