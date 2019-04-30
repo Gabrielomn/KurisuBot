@@ -29,26 +29,21 @@ bot.on('message', (data) => {
     if(data.type !== 'message'){
         return;
     }
-    /*
-    console.log('aq')
-    console.log(data)
-    if(data.subtype = 'message_replied'){
-      handleReply(data)
-    }*/
    
     if(data.user != bot.user){
-        console.log(data)
-         handleMessage(data)
-      
+        if(data.thread_ts){
+            handleReply(data)
+        }else{
+            handleMessage(data)
+        }      
     }
   
 })
 
 //============================================== FUNÇÕES ==============================================
 let handleReply = function(data) {
-    tools.close(data)
+    tools.closeDoubt(data)
 }
-
 
 var handleMessage = function (data){
     
@@ -74,7 +69,6 @@ var handleChannelMensage = function (data){
 }
  
 var handleInitial = function(data){
-    console.log(data.user + " " + data.text)
     if(tools.isCommand(data.text)){
         if(tools.isAdmin(data.user)){
             if(data.text === "!addCommand"){
@@ -115,8 +109,8 @@ var dealsWithDoubtCategory = (data) => {
         var categoria = data.text
         returnMessage(data.user, 'Certo, manda a mensagem que eu encaminho para o dúvidas para vc')
         runningChats[data.user] = function(data){
-            let mensagem = `Nova dúvida sobre: *${tools.categorizer(categoria).toUpperCase()}*\nDuvida: ${data.text}` 
-            postToDuvidas(data)
+            
+            postToDuvidas(data, categoria)
             
             //tools.findAndSendLinks(tools.getUserNameById(bot.users, data.user), data.text) //Modo no qual as palavras chaves são procuradas na frase
             tools.postLink(tools.getUserNameById(bot.users, data.user), tools.categorizer(categoria)) //Modo no qual a categoria é escolhida pelo número
@@ -129,10 +123,12 @@ var returnMessage = function (id, resposta){
     bot.postMessageToUser(tools.getUserNameById(bot.users, id), resposta)  
 }
 
-var postToDuvidas = function (data){
+var postToDuvidas = function (data, categoria){
     let msg = data.text
     let idUser = data.user
-    bot.postMessageToChannel('duvidas',data.text, (data) => {
+    let mensagem = `Nova dúvida sobre: *${tools.categorizer(categoria).toUpperCase()}*\nDuvida: ${data.text}` 
+
+    bot.postMessageToChannel('duvidas',mensagem, (data) => {
       tools.saveDoubt(data.ts, msg, idUser)
     })
  }

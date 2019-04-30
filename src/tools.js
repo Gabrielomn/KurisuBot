@@ -113,8 +113,6 @@ var getCommand = (text, callback) => {
 }
 
 var postCommand = (data) => {
-    console.log(data)
-
     getCommand(data.text, (err, info) => {
         if(err) console.log("erro: " + err)
         else{
@@ -122,13 +120,6 @@ var postCommand = (data) => {
         }
     })
     
-}
-
-var close = function(data) {
-    if(data.text == '!close'){
-        //fechar duvida no banco de dados. placeholder enquanto achamos maneira mais elegante
-        console.log('rolou') //placeholder pra ver se chegou aq
-    }
 }
 
 var admCommands = ['!addCommand', '!delCommand']
@@ -201,29 +192,16 @@ var saveDoubt = (ts, msg, id) => {
     })
 }
 
-//var saveAnswer = () => 
-// var findAndSendLinks = (user, msg) => {
-//     let results = new Array()
-//     msg = titleCase(msg)
-    
-//     keywords.find({}, (err, res) => {
-//         if(err) console.log('Erro: '+ err)
-//         for(i = 0; i < res.length; i++){
-//             if(msg.includes(res[i].key)){
-//                 results.push(res[i].key)
-//             }
-//         }
-        
-//     }).then(() => {
-//         if(results.length > 0){
-//             bot.postMessageToUser(user, "Enquanto ninguém responde, pode ser que esse material ajude.")
-//             for(word in results){
-//                 postLink(user, results[word])
-//             }
-//     }
-//     })
-// }
-
+var closeDoubt = function(data) {
+    if(data.text == '!close'){
+        var newValues = {status: true}
+        let query = {ts: data.thread_ts}
+        doubts.updateOne(query, newValues, (err, res) => {
+            if(err) throw new err
+            console.log( "Sucess Update")
+        })
+    }
+}
 
 module.exports = {
     getUserNameById,
@@ -242,5 +220,5 @@ module.exports = {
     delCommand,
     update,
     findPendingDoubts,
-    close
+    closeDoubt
 }
