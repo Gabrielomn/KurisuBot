@@ -2,10 +2,12 @@ const idChannelGeneral = "CHN2NCVU2"
 const idChannelDuvidas = "CHT932M7T"
 const bot = require('./config')
 const channels =[idChannelGeneral, idChannelDuvidas]
+const acessToken = "xoxp-610927659380-600090422514-610939816692-08171c593ebfe0ab86a30daf2522747b"
 const keywords = require('../models/KeyWord')
 const doubts = require('./../models/Doubt')
 const commands = require('./../models/Command');
 const db = require('../models/database')
+const axios = require('axios')
 const admins = ["UHN2NCEF4", "UHU430TCH"]
 const categories = {
     1:"Orientação a objeto",
@@ -77,6 +79,25 @@ function titleCase(str) {
     return str.join(' ');
 }
 
+let update = () =>{
+    findPendingDoubts((err, duvidas) => {
+        if(err) console.log('erro: ' + err)
+        else{
+            bot.postMessageToChannel('dev', 'DUVIDAS NAO RESPONDIDAS SEUS CORNOS')
+        }
+    })
+}
+
+let findPendingDoubts =  (callback)=>{
+    doubts.find({'status':false}, (err, res) =>{
+        if(err) callback(err, null)
+        if(res!=null){
+            doubt = res
+            callback(null, doubt)
+        }
+    })
+}
+
 //METODOS QUE ATUAM SOBRE OS COMANDOS
 var getCommand = (text, callback) => {
     commands.findOne({'command' : text}, (err, res) => {
@@ -93,14 +114,16 @@ var getCommand = (text, callback) => {
     })
 }
 
-var postCommand = (channel, user, text) => {
-    getCommand(text, (err, info) => {
+var postCommand = (data) => {
+    getCommand(data.text, (err, info) => {
         if(err) console.log("erro: " + err)
         else{
-            bot.postEphemeral(channel, user, info)
+            bot.postEphemeral(data.channel, data.user, info)
         }
     })
+    
 }
+
 var admCommands = ['!addCommand', '!delCommand']
 
 var isCommand = (msg) =>  {
@@ -154,10 +177,12 @@ var postLink = (user, categoria) => {
 }
 
 //METODOS QUE ATUAM SOBRE AS DUVIDAS
-var saveDoubt = (msg) => {
+var saveDoubt = (ts, msg, id) => {
     let date = new Date().getDate()
     new doubts ({
+        ts: ts,
         duvida: msg,
+        idUser: id,
         status: false,
         resposta: '',
         createAt: date,
@@ -169,28 +194,26 @@ var saveDoubt = (msg) => {
     })
 }
 
-// var findAndSendLinks = (user, msg) => {
-//     let results = new Array()
-//     msg = titleCase(msg)
-    
-//     keywords.find({}, (err, res) => {
-//         if(err) console.log('Erro: '+ err)
-//         for(i = 0; i < res.length; i++){
-//             if(msg.includes(res[i].key)){
-//                 results.push(res[i].key)
-//             }
-//         }
-        
-//     }).then(() => {
-//         if(results.length > 0){
-//             bot.postMessageToUser(user, "Enquanto ninguém responde, pode ser que esse material ajude.")
-//             for(word in results){
-//                 postLink(user, results[word])
-//             }
-//     }
-//     })
-// }
-
+var closeDoubt = function(data) {
+    if(data.text == '!close'){
+        axios.get("https://slack.com/api/channels.replies?token=" + acessToken +"&channel=" + idChannelDuvidas + "&thread_ts=" + data.thread_ts).then(res => {
+            let resp = ""
+            for(let i = 1; i < res.data.messages.length-1; i++){
+                if(i != res.data.messages.length-2){
+                    resp += res.data.messages[i].text + " | "
+                }else{
+                    resp += res.data.messages[i].text
+                }
+            }
+            var newValues = {status: true, resposta: resp}
+            let query = {ts: data.thread_ts, status: false}
+            doubts.updateOne(query, newValues, (err, res) => {
+                if(err) throw new err
+                console.log( "Sucess Update")
+            })
+        })
+    }
+}
 
 module.exports = {
     getUserNameById,
@@ -206,5 +229,8 @@ module.exports = {
     saveCommand,
     postCommand,
     isAdmin,
-    delCommand
+    delCommand,
+    update,
+    findPendingDoubts,
+    closeDoubt
 }

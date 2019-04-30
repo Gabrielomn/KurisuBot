@@ -2,34 +2,49 @@ piii = require('./StinkyWordsFilter')
 const axios = require('axios')
 const tools = require('./tools.js')
 const idGabriel = "UHN2NCEF4"
-const doubts = require('./../models/Doubt')
-
+const acessToken = "xoxp-610927659380-600090422514-610939816692-08171c593ebfe0ab86a30daf2522747b"
 
 var runningChats = new Object();
 
 bot = require('./config.js')
 //============================================== STATUS ==============================================
 
+
 bot.on('start', () =>{
 
     bot.postMessageToChannel('general', 
     'Im ready guysss')
+    setInterval(()=>{
+     // tools.update()
+    }, 10000)
 })
 
     //Error Handler
 bot.on('error', (err) => console.log(err));
 
+
 //Message Handler
 bot.on('message', (data) => {
+
     if(data.type !== 'message'){
         return;
     }
+   
     if(data.user != bot.user){
-        handleMessage(data)
+        if(data.thread_ts){
+            handleReply(data)
+        }else{
+            handleMessage(data)
+        }      
     }
+  
 })
 
 //============================================== FUNÇÕES ==============================================
+let handleReply = function(data) {
+    tools.closeDoubt(data)
+}
+
 var handleMessage = function (data){
     
     if(!piii.has(data.text)){
@@ -50,11 +65,10 @@ var handleMessage = function (data){
 }
 
 var handleChannelMensage = function (data){
-    tools.postCommand(data.channel, data.user, data.text)
+    tools.postCommand(data)
 }
  
 var handleInitial = function(data){
-    console.log(data.user + " " + data.text)
     if(tools.isCommand(data.text)){
         if(tools.isAdmin(data.user)){
             if(data.text === "!addCommand"){
@@ -95,11 +109,9 @@ var dealsWithDoubtCategory = (data) => {
         var categoria = data.text
         returnMessage(data.user, 'Certo, manda a mensagem que eu encaminho para o dúvidas para vc')
         runningChats[data.user] = function(data){
-            let mensagem = `Nova dúvida sobre: *${tools.categorizer(categoria).toUpperCase()}*\nDuvida: ${data.text}` 
-            postToDuvidas(mensagem)
-            tools.saveDoubt(data.text)
-            //tools.findAndSendLinks(tools.getUserNameById(bot.users, data.user), data.text) //Modo no qual as palavras chaves são procuradas na frase
             tools.postLink(tools.getUserNameById(bot.users, data.user), tools.categorizer(categoria)) //Modo no qual a categoria é escolhida pelo número
+            postToDuvidas(data, categoria)
+            //tools.findAndSendLinks(tools.getUserNameById(bot.users, data.user), data.text) //Modo no qual as palavras chaves são procuradas na frase
             delete runningChats[data.user]
         }
     }
@@ -109,9 +121,15 @@ var returnMessage = function (id, resposta){
     bot.postMessageToUser(tools.getUserNameById(bot.users, id), resposta)  
 }
 
-var postToDuvidas = function (message){
-    bot.postMessageToChannel('duvidas',message)
-}
+var postToDuvidas = function (data, categoria){
+    let msg = data.text
+    let idUser = data.user
+    let mensagem = `Nova dúvida sobre: *${tools.categorizer(categoria).toUpperCase()}*\nDuvida: ${data.text}` 
+
+    bot.postMessageToChannel('duvidas',mensagem, (data) => {
+      tools.saveDoubt(data.ts, msg, idUser)
+    })
+ }
 
 var postToGeneral = function(message){
     var params = {
