@@ -1,7 +1,17 @@
 let bot = require('./config.js').bot
 const handlers = require('./handlers.js')
+const express = require('express')
+const app = express()
+const PORT = 8080
+
+app.listen(PORT, () =>{
+    console.log('Server is listening on port: ' + PORT)
+})
 //============================================== STATUS ==============================================
 
+app.post('/slack/interact', (req, res) => {
+    
+})
 
 bot.on('start', () =>{
 

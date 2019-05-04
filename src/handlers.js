@@ -3,6 +3,7 @@ const tools = require('./tools.js')
 const secrets = require('./secrets')
 var runningChats = new Object();
 const bot = require('./config').bot
+const webClient = require('./config').slackWeb
 
 
 //============================================== FUNÇÕES ==============================================
@@ -26,7 +27,8 @@ var handleMessage = function (data){
             }
         }   
     }else{
-        returnMessage(data.user, 'Sem palavrão. PALHAÇO')
+        webClient.chat.postMessage({user: data.user, channel: data.channel, text: "Sem palavrão. PALHAÇO"})
+        //returnMessage(data.user, 'Sem palavrão. PALHAÇO')
     }
 }
 
