@@ -1,45 +1,9 @@
-piii = require('./StinkyWordsFilter')
-const axios = require('axios')
+const piii = require('./StinkyWordsFilter')
 const tools = require('./tools.js')
-const idGabriel = "UHN2NCEF4"
 const secrets = require('./secrets')
-const acessToken = secrets.oAuth
-
 var runningChats = new Object();
+const bot = require('./config').bot
 
-bot = require('./config.js')
-//============================================== STATUS ==============================================
-
-
-bot.on('start', () =>{
-
-    bot.postMessageToChannel('general', 
-    'Im ready guysss')
-    setInterval(()=>{
-      //tools.update()
-    }, 10000)
-})
-
-    //Error Handler
-bot.on('error', (err) => console.log(err));
-
-
-//Message Handler
-bot.on('message', (data) => {
-    
-    if(data.type !== 'message'){
-        return;
-    }
-   
-    if(data.user != bot.user){
-        if(data.thread_ts){
-            handleReply(data)
-        }else{
-            handleMessage(data)
-        }      
-    }
-  
-})
 
 //============================================== FUNÇÕES ==============================================
 let handleReply = function(data) {
@@ -49,6 +13,7 @@ let handleReply = function(data) {
 var handleMessage = function (data){
     
     if(!piii.has(data.text)){
+
         id = data.user
         if(tools.isChannel(data.channel)){
             handleChannelMensage(data)
@@ -139,3 +104,14 @@ var postToGeneral = function(message){
     bot.postMessageToChannel('general', message, params)
 }
 
+
+module.exports = {
+    postToGeneral,
+    handleChannelMensage,
+    handleDuvida,
+    handleInitial,
+    handleMessage,
+    handleReply,
+    postToDuvidas
+
+}

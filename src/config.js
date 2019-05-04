@@ -5,4 +5,6 @@ const bot = new SlackBot({
     name: 'KyoumaBot'
 })
 
-module.exports = bot
+module.exports = {
+    bot
+}
