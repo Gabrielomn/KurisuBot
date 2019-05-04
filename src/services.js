@@ -2,7 +2,8 @@ piii = require('./StinkyWordsFilter')
 const axios = require('axios')
 const tools = require('./tools.js')
 const idGabriel = "UHN2NCEF4"
-const acessToken = "xoxp-610927659380-600090422514-610939816692-08171c593ebfe0ab86a30daf2522747b"
+const secrets = require('./secrets')
+const acessToken = secrets.oAuth
 
 var runningChats = new Object();
 
@@ -15,7 +16,7 @@ bot.on('start', () =>{
     bot.postMessageToChannel('general', 
     'Im ready guysss')
     setInterval(()=>{
-     // tools.update()
+      //tools.update()
     }, 10000)
 })
 
@@ -25,7 +26,7 @@ bot.on('error', (err) => console.log(err));
 
 //Message Handler
 bot.on('message', (data) => {
-
+    
     if(data.type !== 'message'){
         return;
     }

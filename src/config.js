@@ -1,7 +1,8 @@
 const SlackBot = require('slackbots')
+const secrets = require('./secrets')
 const bot = new SlackBot({
-    token:'xoxb-610927659380-605202731841-SnjbA9emnZI5rdokgzbzCD8A',
-    name: 'KurisuBot'
+    token: secrets.token,
+    name: 'KyoumaBot'
 })
 
 module.exports = bot
