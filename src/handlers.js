@@ -4,7 +4,7 @@ const secrets = require('./secrets')
 var runningChats = new Object();
 const bot = require('./config').bot
 const webClient = require('./config').slackWeb
-
+const msgs = require('./jsonMessages')
 
 //============================================== FUNÇÕES ==============================================
 let handleReply = function(data) {
@@ -19,15 +19,35 @@ var handleMessage = function (data){
         if(tools.isChannel(data.channel)){
             handleChannelMensage(data)
         }else{
-            if(!runningChats.hasOwnProperty(id)){
+            let msg = msgs.msgParaAluno
+            console.log(data)
+            msg.user = data.user
+            msg.channel = data.channel
+            webClient.chat.postMessage(msg).catch((err) =>{
+                if(err.data.error === "channel_not_found" ){
+                    console.log('nao achei o canal')
+                    webClient.im.open({return_im:true,user: data.user, token: secrets.oAuth}).catch(err =>{
+                        console.log(err)
+                    }).then((res) => {
+                        console.log(res)
+                        msg.channel = res.channel.id
+                        msg.as_user = false
+                        webClient.chat.postMessage(msg)
+                    }).catch(err =>{
+                        console.log(err)
+                    })
+                }
+            })
+            /*if(!runningChats.hasOwnProperty(id)){
                 returnMessage(data.user, 'Olar, oq vc precisa?')
                 runningChats[data.user] = handleInitial
             }else{
                 runningChats[data.user](data)
-            }
+            }*/
+
         }   
     }else{
-        webClient.chat.postMessage({user: data.user, channel: data.channel, text: "Sem palavrão. PALHAÇO"})
+        webClient.chat.postMessage({users: data.user, channel: data.channel, text: "Sem palavrão. PALHAÇO"})
         //returnMessage(data.user, 'Sem palavrão. PALHAÇO')
     }
 }

@@ -1,4 +1,5 @@
 let bot = require('./config.js').bot
+let web = require('./config.js').slackWeb
 const handlers = require('./handlers.js')
 const express = require('express')
 const app = express()
@@ -10,11 +11,10 @@ app.listen(PORT, () =>{
 //============================================== STATUS ==============================================
 
 app.post('/slack/interact', (req, res) => {
-    
+    console.log(req)
 })
 
 bot.on('start', () =>{
-
     bot.postMessageToChannel('general', 
     'Im ready guysss')
     setInterval(()=>{

@@ -7,5 +7,4 @@ const idGabriel = "UHN2NCEF4"
 module.exports = {
     oAuth: OAuthTokenKyouma,
     token: botUserKyouma,
-    idGabriel: idGabriel
 }
