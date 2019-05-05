@@ -5,7 +5,7 @@ var runningChats = new Object();
 const bot = require('./config').bot
 const webClient = require('./config').slackWeb
 const msgs = require('./jsonMessages')
-
+const interactive_callbacks = require('./interactive_callbacks.js')
 //============================================== FUNÇÕES ==============================================
 let handleReply = function(data) {
     tools.closeDoubt(data)
@@ -13,11 +13,9 @@ let handleReply = function(data) {
 
 let handleInteraction = function(body) {
     let obj = JSON.parse(body.payload)
-    if(obj.actions[0].name == "open_doubt"){
-        handleOpenDoubt(obj)
-    }else if (obj.actions[0].name == "edit_doubt"){
-        editDoubt(obj)
-    }
+    console.log(obj.callback_id)
+    interactive_callbacks[obj.callback_id](obj)
+
 }
 
 let handleOpenDoubt = function(body){
@@ -25,7 +23,7 @@ let handleOpenDoubt = function(body){
     msg.trigger_id = body.trigger_id
     webClient.dialog.open(msg).catch(err => {
         console.log(err.data.response_metadata.messages)
-    }).then(()=> console.log('lol')    )
+    })
 }
 
 var handleMessage = function (data){
@@ -37,7 +35,6 @@ var handleMessage = function (data){
             handleChannelMensage(data)
         }else{
             let msg = msgs.msgParaAluno
-            console.log(data)
             msg.user = data.user
             msg.channel = data.channel
             webClient.chat.postMessage(msg).catch((err) =>{

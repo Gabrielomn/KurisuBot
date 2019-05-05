@@ -25,29 +25,58 @@ const msgParaAluno = {
     ]
 }
 
-const dialog = {
-	"trigger_id": "13345224609.738474920.8088930838d88f008e0",
+const dialog2 = {
 	"dialog": {
-		"callback_id": "ryde-46e2b0",
-		"title": "Request a Ride",
-		"submit_label": "Request",
+		"callback_id": "open_doubt_dialog",
+		"title": "Nova Dúvida",
+		"submit_label": "Send",
 		"notify_on_cancel": true,
 		"state": "Limo",
 		"elements": [{
-				"type": "text",
-				"label": "Pickup Location",
-				"name": "loc_origin"
+				"type": "select",
+				"label": "Categoria da dúvida",
+                "name": "doubt_category",
+                "options": [
+                ]
 			},
 			{
-				"type": "text",
-				"label": "Dropoff Location",
-				"name": "loc_destination"
+				"type": "textarea",
+				"label": "Digita a dùvida",
+                "name": "doubt_body",
+                "placeholder" :"Aqui vai o corpo da dúvida"
+			}
+		]
+	}
+}
+
+const dialog = {
+	"dialog": {
+		"callback_id": "open_doubt_dialog",
+		"title": "Nova Dúvida",
+		"submit_label": "Send",
+		"notify_on_cancel": true,
+		"state": "Limo",
+		"elements": [{
+				"type": "select",
+				"label": "Categoria da dúvida",
+                "name": "doubt_category",
+                "options": [
+                    {"value":"OO",
+                     "label" : "Orientação a Objeto"},
+                    {"value":"testes", "label": "tests"}
+                ]
+			},
+			{
+				"type": "textarea",
+				"label": "Digita a dùvida",
+                "name": "doubt_body",
+                "placeholder" :"Aqui vai o corpo da dúvida"
 			}
 		]
 	}
 }
 module.exports = {
     msgParaAluno,
-    dialog
+    dialog: dialog2
 }
 
