@@ -11,6 +11,23 @@ let handleReply = function(data) {
     tools.closeDoubt(data)
 }
 
+let handleInteraction = function(body) {
+    let obj = JSON.parse(body.payload)
+    if(obj.actions[0].name == "open_doubt"){
+        handleOpenDoubt(obj)
+    }else if (obj.actions[0].name == "edit_doubt"){
+        editDoubt(obj)
+    }
+}
+
+let handleOpenDoubt = function(body){
+    let msg = JSON.parse(JSON.stringify(msgs.dialog))
+    msg.trigger_id = body.trigger_id
+    webClient.dialog.open(msg).catch(err => {
+        console.log(err.data.response_metadata.messages)
+    }).then(()=> console.log('lol')    )
+}
+
 var handleMessage = function (data){
     
     if(!piii.has(data.text)){
@@ -134,6 +151,7 @@ module.exports = {
     handleInitial,
     handleMessage,
     handleReply,
-    postToDuvidas
+    postToDuvidas,
+    handleInteraction
 
 }

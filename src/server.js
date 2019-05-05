@@ -1,17 +1,19 @@
 let bot = require('./config.js').bot
 let web = require('./config.js').slackWeb
 const handlers = require('./handlers.js')
+const bodyParser = require('body-parser')
 const express = require('express')
 const app = express()
 const PORT = 8080
-
+app.use(bodyParser.urlencoded({extended:true}))
 app.listen(PORT, () =>{
     console.log('Server is listening on port: ' + PORT)
 })
 //============================================== STATUS ==============================================
 
 app.post('/slack/interact', (req, res) => {
-    console.log(req)
+    handlers.handleInteraction(req.body)
+    res.sendStatus(200)
 })
 
 bot.on('start', () =>{
