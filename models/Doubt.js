@@ -5,6 +5,10 @@ const DoubtSchema = mongo.Schema({
         require: true,
         unique: true
     },
+    topico: {
+        type: String,
+        require: true
+    },
     duvida: {
         type: String,
         require: true

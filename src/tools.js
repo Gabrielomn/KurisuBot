@@ -1,8 +1,8 @@
 const idChannelGeneral = "CHN2NCVU2"
 const idChannelDuvidas = "CHT932M7T"
-const bot = require('./config')
+const bot = require('./config').bot
 const channels =[idChannelGeneral, idChannelDuvidas]
-const acessToken = "xoxp-610927659380-600090422514-610939816692-08171c593ebfe0ab86a30daf2522747b"
+const acessToken = require('./secrets').oAuth;
 const keywords = require('../models/KeyWord')
 const doubts = require('./../models/Doubt')
 const commands = require('./../models/Command');
@@ -177,10 +177,11 @@ var postLink = (user, categoria) => {
 }
 
 //METODOS QUE ATUAM SOBRE AS DUVIDAS
-var saveDoubt = (ts, msg, id) => {
+var saveDoubt = (ts, tema, msg, id) => {
     let date = new Date()
     new doubts ({
         ts: ts,
+        topico: tema,
         duvida: msg,
         idUser: id,
         status: false,

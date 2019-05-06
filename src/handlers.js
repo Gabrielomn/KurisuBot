@@ -1,66 +1,46 @@
-piii = require('./StinkyWordsFilter')
-const axios = require('axios')
+const piii = require('./StinkyWordsFilter')
 const tools = require('./tools.js')
-const idGabriel = "UHN2NCEF4"
-const acessToken = "xoxp-610927659380-600090422514-610939816692-08171c593ebfe0ab86a30daf2522747b"
-
+const secrets = require('./secrets')
 var runningChats = new Object();
-
-bot = require('./config.js')
-//============================================== STATUS ==============================================
-
-
-bot.on('start', () =>{
-
-    bot.postMessageToChannel('general', 
-    'Im ready guysss')
-    setInterval(()=>{
-     // tools.update()
-    }, 10000)
-})
-
-    //Error Handler
-bot.on('error', (err) => console.log(err));
-
-
-//Message Handler
-bot.on('message', (data) => {
-
-    if(data.type !== 'message'){
-        return;
-    }
-   
-    if(data.user != bot.user){
-        if(data.thread_ts){
-            handleReply(data)
-        }else{
-            handleMessage(data)
-        }      
-    }
-  
-})
-
+const bot = require('./config').bot
+const webClient = require('./config').slackWeb
+const msgs = require('./jsonMessages')
+const interactive_callbacks = require('./interactive_callbacks.js')
 //============================================== FUNÇÕES ==============================================
 let handleReply = function(data) {
     tools.closeDoubt(data)
 }
 
+let handleInteraction = function(body) {
+    let obj = JSON.parse(body.payload)
+    console.log(obj.callback_id)
+    interactive_callbacks[obj.callback_id](obj)
+
+}
+
+let handleOpenDoubt = function(body){
+    let msg = JSON.parse(JSON.stringify(msgs.dialog))
+    msg.trigger_id = body.trigger_id
+    webClient.dialog.open(msg).catch(err => {
+        console.log(err.data.response_metadata.messages)
+    })
+} 
+
 var handleMessage = function (data){
     
     if(!piii.has(data.text)){
+
         id = data.user
         if(tools.isChannel(data.channel)){
             handleChannelMensage(data)
         }else{
-            if(!runningChats.hasOwnProperty(id)){
-                returnMessage(data.user, 'Olar, oq vc precisa?')
-                runningChats[data.user] = handleInitial
-            }else{
-                runningChats[data.user](data)
-            }
+            let msg = msgs.msgParaAluno
+            msg.user = data.user
+            msg.channel = data.channel
+            webClient.chat.postMessage(msg)
         }   
     }else{
-        returnMessage(data.user, 'Sem palavrão. PALHAÇO')
+        webClient.chat.postMessage({users: data.user, channel: data.channel, text: "Sem palavrão. PALHAÇO"})
     }
 }
 
@@ -138,3 +118,15 @@ var postToGeneral = function(message){
     bot.postMessageToChannel('general', message, params)
 }
 
+
+module.exports = {
+    postToGeneral,
+    handleChannelMensage,
+    handleDuvida,
+    handleInitial,
+    handleMessage,
+    handleReply,
+    postToDuvidas,
+    handleInteraction
+
+}

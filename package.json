@@ -11,6 +11,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "express": "4.16.4",
     "axios": "^0.18.0",
     "mongoose": "^5.5.2",
     "pg": "^7.10.0",
@@ -18,7 +19,10 @@
     "piii": "4.0.2",
     "piii-filters": "1.0.0",
     "sequelize": "^5.7.1",
-    "slackbots": "1.2.0"
+    "slackbots": "1.2.0",
+    "@slack/client": "5.0.1",
+    "@slack/events-api": "2.2.0",
+    "@slack/interactive-messages": "1.1.1"
   },
   "devDependencies": {
     "nodemon": "^1.18.11"
