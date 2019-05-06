@@ -41,10 +41,14 @@ handleAlunoChoice = (obj) => {
 
 handleEditChoice = obj => {
     if(obj.submission.close_open === "open"){
-        //TODO
+        handleKeepOpenDoubt(obj)
     }else if(obj.submission.close_open === "close"){
         handleCloseDoubt(obj)
     }
+}
+
+handleKeepOpenDoubt = obj => {
+    webClient.chat.postMessage({channel : idChannelDuvidas, thread_ts : obj.submission.doubt_select, text : obj.submission.doubt_body})
 }
 
 handleCloseDoubt = obj => {
@@ -73,7 +77,7 @@ handleNewDoubtDialog = (obj) =>{
         tools.saveDoubt(res.ts, categoria, msg, idUser)
     })
     keywords.findOne({"key" : obj.submission.doubt_category}).then(res => {
-        webClient.chat.postMessage({channel: obj.channel.id, text : `Enquanto ninguém responde sua dúvida este link sobre ${categoria} pode ser útil: ` + res.link})
+        webClient.chat.postMessage({channel: obj.channel.id, text : `Enquanto ninguém responde sua dúvida este link sobre ${categoria} pode ser útil: \n` + res.link})
     })
     
 }
