@@ -48,6 +48,7 @@ handleEditChoice = obj => {
 }
 
 handleCloseDoubt = obj => {
+    webClient.chat.postMessage({channel : idChannelDuvidas, thread_ts : obj.submission.doubt_select, text : obj.submission.doubt_body})
     axios.get("https://slack.com/api/channels.replies?token=" + acessToken +"&channel=" + idChannelDuvidas + "&thread_ts=" + obj.submission.doubt_select).then(res => {
         let resp = new Array()
         for(let i = 1; i < res.data.messages.length; i++){
@@ -58,7 +59,7 @@ handleCloseDoubt = obj => {
         let query = {ts: obj.submission.doubt_select, status: false}
         doubts.updateOne(query, newValues, (err, res) => {
             if(err) throw new err
-            console.log( "Sucess Update")
+            console.log( "Doubt was updated with sucess")
         })
     })
 }
@@ -68,10 +69,13 @@ handleNewDoubtDialog = (obj) =>{
     let idUser = obj.user.id
     let categoria = obj.submission.doubt_category
     let mensagem = `Nova dúvida sobre: *${categoria.toUpperCase()}*\nDuvida: ${msg}` 
-
     webClient.chat.postMessage({channel : idChannelDuvidas, text : mensagem}).then((res) => {
         tools.saveDoubt(res.ts, categoria, msg, idUser)
     })
+    keywords.findOne({"key" : obj.submission.doubt_category}).then(res => {
+        webClient.chat.postMessage({channel: obj.channel.id, text : `Enquanto ninguém responde sua dúvida este link sobre ${categoria} pode ser útil: ` + res.link})
+    })
+    
 }
 
 module.exports = {

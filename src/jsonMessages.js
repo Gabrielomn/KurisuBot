@@ -30,7 +30,7 @@ const dialog = {
 		"callback_id": "open_doubt_dialog",
 		"title": "Nova Dúvida",
 		"submit_label": "Send",
-		"notify_on_cancel": true,
+		"notify_on_cancel": false,
 		"state": "Limo",
 		"elements": [{
 				"type": "select",
@@ -55,7 +55,7 @@ const showDoubts = {
 		"callback_id": "edit_doubt",
 		"title": "Editar dúvida",
 		"submit_label": "Send",
-		"notify_on_cancel": true,
+		"notify_on_cancel": false,
 		"state": "Limo",
 		"elements": [{
 				"type": "select",
@@ -68,7 +68,7 @@ const showDoubts = {
 				"type": "textarea",
 				"label": "Digita a dúvida",
                 "name": "doubt_body",
-                "placeholder" :"Se tiver alguma outra pergunta sobre a mesma dúvida escreva aqui."
+                "placeholder" :"Se tiver alguma outra pergunta sobre a mesma dúvida escreva aqui, se for fechar a fúvida e quiser agradecer a quem lhe respondeu pode mandar.."
 			},{
 				"type": "select",
 				"label": "O que fazer",

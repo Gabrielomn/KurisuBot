@@ -14,7 +14,7 @@ app.listen(PORT, () =>{
 app.post('/slack/interact', (req, res) => {
     handlers.handleInteraction(req.body)
     console.log('interaction handled')
-    res.sendStatus(200)
+    res.send()
 })
 
 bot.on('start', () =>{

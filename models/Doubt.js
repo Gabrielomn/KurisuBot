@@ -7,8 +7,7 @@ const DoubtSchema = mongo.Schema({
     },
     topico: {
         type: String,
-        require: true,
-        unique: true
+        require: true
     },
     duvida: {
         type: String,

@@ -37,21 +37,7 @@ var handleMessage = function (data){
             let msg = msgs.msgParaAluno
             msg.user = data.user
             msg.channel = data.channel
-            webClient.chat.postMessage(msg).catch((err) =>{
-                if(err.data.error === "channel_not_found" ){
-                    console.log('nao achei o canal')
-                    webClient.im.open({return_im:true,user: data.user, token: secrets.oAuth}).catch(err =>{
-                        console.log(err)
-                    }).then((res) => {
-                        console.log(res)
-                        msg.channel = res.channel.id
-                        msg.as_user = false
-                        webClient.chat.postMessage(msg)
-                    }).catch(err =>{
-                        console.log(err)
-                    })
-                }
-            })
+            webClient.chat.postMessage(msg)
         }   
     }else{
         webClient.chat.postMessage({users: data.user, channel: data.channel, text: "Sem palavrão. PALHAÇO"})
