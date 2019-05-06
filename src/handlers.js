@@ -24,7 +24,7 @@ let handleOpenDoubt = function(body){
     webClient.dialog.open(msg).catch(err => {
         console.log(err.data.response_metadata.messages)
     })
-}
+} 
 
 var handleMessage = function (data){
     
@@ -52,17 +52,9 @@ var handleMessage = function (data){
                     })
                 }
             })
-            /*if(!runningChats.hasOwnProperty(id)){
-                returnMessage(data.user, 'Olar, oq vc precisa?')
-                runningChats[data.user] = handleInitial
-            }else{
-                runningChats[data.user](data)
-            }*/
-
         }   
     }else{
         webClient.chat.postMessage({users: data.user, channel: data.channel, text: "Sem palavrão. PALHAÇO"})
-        //returnMessage(data.user, 'Sem palavrão. PALHAÇO')
     }
 }
 

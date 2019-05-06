@@ -177,10 +177,11 @@ var postLink = (user, categoria) => {
 }
 
 //METODOS QUE ATUAM SOBRE AS DUVIDAS
-var saveDoubt = (ts, msg, id) => {
+var saveDoubt = (ts, tema, msg, id) => {
     let date = new Date()
     new doubts ({
         ts: ts,
+        topico: tema,
         duvida: msg,
         idUser: id,
         status: false,

@@ -20,10 +20,9 @@
     "piii-filters": "1.0.0",
     "sequelize": "^5.7.1",
     "slackbots": "1.2.0",
-    "@slack/client" : "5.0.1",
-    "@slack/events-api":"2.2.0",
+    "@slack/client": "5.0.1",
+    "@slack/events-api": "2.2.0",
     "@slack/interactive-messages": "1.1.1"
-
   },
   "devDependencies": {
     "nodemon": "^1.18.11"

@@ -25,30 +25,6 @@ const msgParaAluno = {
     ]
 }
 
-const dialog2 = {
-	"dialog": {
-		"callback_id": "open_doubt_dialog",
-		"title": "Nova Dúvida",
-		"submit_label": "Send",
-		"notify_on_cancel": true,
-		"state": "Limo",
-		"elements": [{
-				"type": "select",
-				"label": "Categoria da dúvida",
-                "name": "doubt_category",
-                "options": [
-                ]
-			},
-			{
-				"type": "textarea",
-				"label": "Digita a dùvida",
-                "name": "doubt_body",
-                "placeholder" :"Aqui vai o corpo da dúvida"
-			}
-		]
-	}
-}
-
 const dialog = {
 	"dialog": {
 		"callback_id": "open_doubt_dialog",
@@ -61,22 +37,60 @@ const dialog = {
 				"label": "Categoria da dúvida",
                 "name": "doubt_category",
                 "options": [
-                    {"value":"OO",
-                     "label" : "Orientação a Objeto"},
-                    {"value":"testes", "label": "tests"}
                 ]
 			},
 			{
 				"type": "textarea",
-				"label": "Digita a dùvida",
+				"label": "Digita a dúvida",
                 "name": "doubt_body",
                 "placeholder" :"Aqui vai o corpo da dúvida"
 			}
 		]
 	}
 }
+
+
+const showDoubts = {
+	"dialog": {
+		"callback_id": "edit_doubt",
+		"title": "Editar dúvida",
+		"submit_label": "Send",
+		"notify_on_cancel": true,
+		"state": "Limo",
+		"elements": [{
+				"type": "select",
+				"label": "Selecione a dúvida",
+                "name": "doubt_select",
+                "options": [
+                ]
+			},
+			{
+				"type": "textarea",
+				"label": "Digita a dúvida",
+                "name": "doubt_body",
+                "placeholder" :"Se tiver alguma outra pergunta sobre a mesma dúvida escreva aqui."
+			},{
+				"type": "select",
+				"label": "O que fazer",
+                "name": "close_open",
+                "options": [{
+                    "value" : "open",
+                    "label" : "Deixar dúvida aberta"
+                    },
+                {
+                    "value" : "close",
+                    "label" : "Fechar dúvida"
+                    }
+                ]
+            }
+            
+		]
+	}
+}
+
 module.exports = {
     msgParaAluno,
-    dialog: dialog2
+    dialog,
+    showDoubts
 }
 
