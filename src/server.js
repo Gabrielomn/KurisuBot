@@ -1,8 +1,10 @@
+const axios = require('axios')
 let bot = require('./config.js').bot
 let web = require('./config.js').slackWeb
 const handlers = require('./handlers.js')
 const bodyParser = require('body-parser')
 const express = require('express')
+const tools = require('./tools.js')
 const app = express()
 const PORT = 8080
 app.use(bodyParser.urlencoded({extended:true}))
@@ -20,9 +22,10 @@ app.post('/slack/interact', (req, res) => {
 bot.on('start', () =>{
     bot.postMessageToChannel('general', 
     'Im ready guysss')
+
     setInterval(()=>{
-      //tools.update()
-    }, 10000)
+      tools.update()
+    }, /*1 * 60 * */60 * 1000)
 })
 
     //Error Handler

@@ -3,6 +3,7 @@ const idChannelDuvidas = "CHT932M7T"
 const bot = require('./config').bot
 const channels =[idChannelGeneral, idChannelDuvidas]
 const acessToken = require('./secrets').oAuth;
+const webClient = require('./config').slackWeb
 const keywords = require('../models/KeyWord')
 const doubts = require('./../models/Doubt')
 const commands = require('./../models/Command');
@@ -83,19 +84,39 @@ let update = () =>{
     findPendingDoubts((err, duvidas) => {
         if(err) console.log('erro: ' + err)
         else{
-            bot.postMessageToChannel('dev', 'DUVIDAS NAO RESPONDIDAS SEUS CORNOS')
+            //NAO TA ATUALIZANDO NO BANCO DE DADOS, CONSERTAR ISSO.
+            doubts.updateMany({'status':false}, {$set: {'updateAt': new Date()}})
+            if(duvidas.length){
+                bot.postMessageToChannel('monitoria', `Duvidas não respondidas ${idChannelDuvidas}`)
+            /*axios.get("https://slack.com/api/chat.getPermalink?token=" + acessToken +"&channel=" + "CHT932M7T" + "&thread_ts=" + duvidas[0].ts).then(res => {
+                bot.postMessageToChannel('dev', `DUVIDAS NAO RESPONDIDAS SEUS CORNOS\n${res}`)
+            })*/
+        }
         }
     })
 }
 
 let findPendingDoubts =  (callback)=>{
-    doubts.find({'status':false}, (err, res) =>{
+    let value = getEarlierDateMillisecs(2)
+    //let value = getEarlierDateMillisecs(600)   
+    
+    doubts.find({'status':false, 'updateAt':{$lte:value}}, (err, res) =>{
         if(err) callback(err, null)
         if(res!=null){
             doubt = res
             callback(null, doubt)
         }
     })
+    
+}
+
+
+const getEarlierDateMillisecs = (minutesBack) => {
+    let date= new Date()
+    let minutes = date.getMinutes()
+    date.setMinutes(minutes - minutesBack)
+    let value = date.getTime()
+    return value
 }
 
 //METODOS QUE ATUAM SOBRE OS COMANDOS

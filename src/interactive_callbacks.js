@@ -47,8 +47,12 @@ handleEditChoice = obj => {
     }
 }
 
-handleKeepOpenDoubt = obj => {
-    webClient.chat.postMessage({channel : idChannelDuvidas, thread_ts : obj.submission.doubt_select, text : obj.submission.doubt_body})
+handleKeepOpenDoubt = (obj) => {
+    webClient.chat.postMessage({channel : idChannelDuvidas, thread_ts : obj.submission.doubt_select, text : obj.submission.doubt_body}).catch(err => {
+        if(err.data.error === "no_text"){
+            webClient.chat.postMessage({channel:obj.channel.id,user: obj.user.id, text:"https://giphy.com/gifs/why-ryan-reynolds-1M9fmo1WAFVK0"})
+    }
+    })
 }
 
 handleCloseDoubt = obj => {

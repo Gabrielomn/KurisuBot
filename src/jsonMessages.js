@@ -68,7 +68,8 @@ const showDoubts = {
 				"type": "textarea",
 				"label": "Digita a dúvida",
                 "name": "doubt_body",
-                "placeholder" :"Se tiver alguma outra pergunta sobre a mesma dúvida escreva aqui, se for fechar a fúvida e quiser agradecer a quem lhe respondeu pode mandar.."
+                "placeholder" :"Se tiver alguma outra pergunta sobre a mesma dúvida escreva aqui, se for fechar a fúvida e quiser agradecer a quem lhe respondeu pode mandar..",
+                "optional":true
 			},{
 				"type": "select",
 				"label": "O que fazer",
