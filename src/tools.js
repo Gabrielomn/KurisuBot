@@ -79,29 +79,32 @@ function titleCase(str) {
     }
     return str.join(' ');
 }
+const MINUTESBACK = 3
 
 let update = () =>{
     findPendingDoubts((err, duvidas) => {
         if(err) console.log('erro: ' + err)
         else{
+
             //NAO TA ATUALIZANDO NO BANCO DE DADOS, CONSERTAR ISSO.
-            doubts.updateMany({status:false},{updateAt : new Date()}).then(res => {
-                bot.postMessageToChannel('dev', `Duvidas não respondidas em <#${idChannelDuvidas}>`)
+            let date = getEarlierDateMillisecs(MINUTESBACK)
+            doubts.updateMany({status:false, updateAt: {$lt: date}},{updateAt : new Date()}).then(res => {
+            //    bot.postMessageToChannel('dev', `Duvidas não respondidas em <#${idChannelDuvidas}>`)
             }).catch(err => console.log(err))
-            console.log(duvidas)
-            axios.get("https://slack.com/api/chat.getPermalink?token=" + acessToken +"&channel=" + "CHT932M7T" + "&message_ts=" + duvidas[0].ts).then(res => {
-                console.log(res)
-            })
-        
+            if(duvidas.length){
+                console.log("found'em  \n" + duvidas)
+                axios.get("https://slack.com/api/chat.getPermalink?token=" + acessToken +"&channel=" + "CHT932M7T" + "&message_ts=" + duvidas[0].ts).then(res => {
+                    bot.postMessageToChannel('dev', `Duvidas não respondidas at <${res.data.permalink}|Duvidas>`)
+                })
+            }
         }
     })
 }
 
 let findPendingDoubts =  (callback)=>{
-    let value = getEarlierDateMillisecs(3)
-    //let value = getEarlierDateMillisecs(600)   
-    
-    doubts.find({status:false}, (err, res) =>{
+    let date = getEarlierDateMillisecs(MINUTESBACK)
+    console.log('looking for pending doubts')
+    doubts.find({status:false, updateAt: {$lt: date}}, (err, res) =>{
         if(err) callback(err, null)
         if(res!=null){
             doubt = res
@@ -121,8 +124,8 @@ const getEarlierDateMillisecs = (minutesBack) => {
     let date= new Date()
     let minutes = date.getMinutes()
     date.setMinutes(minutes - minutesBack)
-    let value = date.getTime()
-    return value
+    //let value = date.getTime()
+    return date
 }
 
 //METODOS QUE ATUAM SOBRE OS COMANDOS
