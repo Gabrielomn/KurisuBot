@@ -1,7 +1,6 @@
 const piii = require('./StinkyWordsFilter')
 const tools = require('./tools.js')
 const secrets = require('./secrets')
-var runningChats = new Object();
 const bot = require('./config').bot
 const webClient = require('./config').slackWeb
 const msgs = require('./jsonMessages')

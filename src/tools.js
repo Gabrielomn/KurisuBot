@@ -4,51 +4,10 @@ const bot = require('./config').bot
 const channels =[idChannelGeneral, idChannelDuvidas]
 const acessToken = require('./secrets').oAuth;
 const webClient = require('./config').slackWeb
-const keywords = require('../models/KeyWord')
 const doubts = require('./../models/Doubt')
 const commands = require('./../models/Command');
-const db = require('../models/database')
 const axios = require('axios')
 const admins = ["UHN2NCEF4", "UHU430TCH"]
-const categories = {
-    1:"Orientação a objeto",
-    2:"Manipulação de coleções",
-    3:"Testes",
-    4:"Sintaxe Java",
-    5:"Composição de Classes",
-    6:"Grasp",
-    7:"Heranças",
-    8:"Interfaces",
-    9:"Exceções",
-    10:"Cronogramas",
-    11:"Outros"
-}
-
-//MÉTODOS DE VALIDAÇÃO/BUSCA
-var possiblyUsefulLink = function(categoria){
-
-    db.procuraPorKey(categoria).then(resultado => {
-        return resultado.links
-    })
-}
-
-var categorizer = function(value){
-    return categories[value]    
-}
-
-var iUnderstoodTheDoubt = (text) => {
-    let expected = /(^[1-9]|10|11$)/
-    return expected.test(text)
-}
-
-var listCategories = function(){
-    let saida = ""
-    for(var key in categories){
-        saida += key + "." + categories[key] + "\n"
-    }
-
-    return saida
-}
 
 var getUserNameById = function (lista, id){
     let listaAux
@@ -72,30 +31,23 @@ var isAdmin = (user) => {
     return admins.includes(user)
 }
 
-function titleCase(str) {
-    str = str.toLowerCase().split(' ');
-    for (var i = 0; i < str.length; i++) {
-      str[i] = str[i].charAt(0).toUpperCase() + str[i].slice(1); 
-    }
-    return str.join(' ');
-}
 const MINUTESBACK = 3
 
 let update = () =>{
     findPendingDoubts((err, duvidas) => {
         if(err) console.log('erro: ' + err)
         else{
-
-            //NAO TA ATUALIZANDO NO BANCO DE DADOS, CONSERTAR ISSO.
             let date = getEarlierDateMillisecs(MINUTESBACK)
             doubts.updateMany({status:false, updateAt: {$lt: date}},{updateAt : new Date()}).then(res => {
-            //    bot.postMessageToChannel('dev', `Duvidas não respondidas em <#${idChannelDuvidas}>`)
             }).catch(err => console.log(err))
             if(duvidas.length){
-                console.log("found'em  \n" + duvidas)
-                axios.get("https://slack.com/api/chat.getPermalink?token=" + acessToken +"&channel=" + "CHT932M7T" + "&message_ts=" + duvidas[0].ts).then(res => {
-                    bot.postMessageToChannel('dev', `Duvidas não respondidas sobre ${duvidas[0].topico} em <${res.data.permalink}|Duvidas>`)
-                })
+                bot.postMessageToChannel('dev',"*Duvidas em aberto:* ")
+                for(let i = 0; i < duvidas.length; i++){
+                    axios.get("https://slack.com/api/chat.getPermalink?token=" + acessToken +"&channel=" + "CHT932M7T" + "&message_ts=" + duvidas[i].ts).then(res => {
+                        bot.postMessageToChannel('dev', "\n" + `Tópico: ${duvidas[i].topico}. --> Link para a *<${res.data.permalink}|dúvida>*`)      
+                    })
+                }
+                
             }
         }
     })
@@ -113,12 +65,6 @@ let findPendingDoubts =  (callback)=>{
     })
     
 }
-
-let d1 = new Date()
-let d2 = new Date()
-
-console.log(d1.getTime() - d2.getTime())
-
 
 const getEarlierDateMillisecs = (minutesBack) => {
     let date= new Date()
@@ -186,26 +132,6 @@ var delCommand = (comando) => {
     })
 }
 
-//METODOS QUE ATUAM SOBRE AS KEYWORDS
-var getLink = (categoria, callback) =>{
-    keywords.findOne({'key' : categoria}, (err, res) => {
-        if(err) callback(err, null)
-        if(res != null){
-            link = res.link
-            callback(null, link)
-        }
-    })
-}
-
-var postLink = (user, categoria) => {
-    getLink(categoria, (err, link) => {
-        if(err) console.log("erro: " + err)
-        else{
-            bot.postMessageToUser(user,"Enquanto ninguém responde esse link pode ajudar: " +  link)
-        }
-    })
-}
-
 //METODOS QUE ATUAM SOBRE AS DUVIDAS
 var saveDoubt = (ts, tema, msg, id) => {
     let date = new Date()
@@ -245,13 +171,7 @@ var closeDoubt = function(data) {
 
 module.exports = {
     getUserNameById,
-    listCategories,
-    iUnderstoodTheDoubt,
-    categorizer,
     isChannel,
-    possiblyUsefulLink,
-    categories,
-    postLink,
     saveDoubt,
     isCommand,
     saveCommand,

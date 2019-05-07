@@ -51,12 +51,16 @@ handleKeepOpenDoubt = (obj) => {
     webClient.chat.postMessage({channel : idChannelDuvidas, thread_ts : obj.submission.doubt_select, text : obj.submission.doubt_body}).catch(err => {
         if(err.data.error === "no_text"){
             webClient.chat.postMessage({channel:obj.channel.id,user: obj.user.id, text:"https://giphy.com/gifs/why-ryan-reynolds-1M9fmo1WAFVK0"})
-    }
+        }
     })
 }
 
 handleCloseDoubt = obj => {
-    webClient.chat.postMessage({channel : idChannelDuvidas, thread_ts : obj.submission.doubt_select, text : obj.submission.doubt_body})
+    webClient.chat.postMessage({channel : idChannelDuvidas, thread_ts : obj.submission.doubt_select, text : obj.submission.doubt_body}).catch(err => {
+        if(err.data.error === "no_text"){
+            webClient.chat.postMessage({channel:obj.channel.id,user: obj.user.id, text:"https://media.tenor.com/images/1fd5f445304622bdb2da23c5762ce276/tenor.gif"})
+        }
+    })
     axios.get("https://slack.com/api/channels.replies?token=" + acessToken +"&channel=" + idChannelDuvidas + "&thread_ts=" + obj.submission.doubt_select).then(res => {
         let resp = new Array()
         for(let i = 1; i < res.data.messages.length; i++){
@@ -81,7 +85,7 @@ handleNewDoubtDialog = (obj) =>{
         tools.saveDoubt(res.ts, categoria, msg, idUser)
     })
     keywords.findOne({"key" : obj.submission.doubt_category}).then(res => {
-        webClient.chat.postMessage({channel: obj.channel.id, text : `Enquanto ninguém responde sua dúvida este link sobre ${categoria} pode ser útil: \n` + res.link})
+        webClient.chat.postMessage({channel: obj.channel.id, text : `Enquanto ninguém responde sua dúvida este *link sobre ${categoria}* pode ser útil: \n` + res.link})
     })
     
 }

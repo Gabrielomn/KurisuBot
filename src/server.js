@@ -1,6 +1,4 @@
-const axios = require('axios')
 let bot = require('./config.js').bot
-let web = require('./config.js').slackWeb
 const handlers = require('./handlers.js')
 const bodyParser = require('body-parser')
 const express = require('express')
