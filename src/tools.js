@@ -94,7 +94,7 @@ let update = () =>{
             if(duvidas.length){
                 console.log("found'em  \n" + duvidas)
                 axios.get("https://slack.com/api/chat.getPermalink?token=" + acessToken +"&channel=" + "CHT932M7T" + "&message_ts=" + duvidas[0].ts).then(res => {
-                    bot.postMessageToChannel('dev', `Duvidas não respondidas at <${res.data.permalink}|Duvidas>`)
+                    bot.postMessageToChannel('dev', `Duvidas não respondidas sobre ${duvidas[0].topico} em <${res.data.permalink}|Duvidas>`)
                 })
             }
         }
