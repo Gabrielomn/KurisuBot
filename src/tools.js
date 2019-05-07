@@ -85,22 +85,23 @@ let update = () =>{
         if(err) console.log('erro: ' + err)
         else{
             //NAO TA ATUALIZANDO NO BANCO DE DADOS, CONSERTAR ISSO.
-            doubts.updateMany({'status':false}, {$set: {'updateAt': new Date()}})
-            if(duvidas.length){
+            doubts.updateMany({status:false},{updateAt : new Date()}).then(res => {
                 bot.postMessageToChannel('dev', `Duvidas não respondidas em <#${idChannelDuvidas}>`)
-            /*axios.get("https://slack.com/api/chat.getPermalink?token=" + acessToken +"&channel=" + "CHT932M7T" + "&thread_ts=" + duvidas[0].ts).then(res => {
-                bot.postMessageToChannel('dev', `DUVIDAS NAO RESPONDIDAS SEUS CORNOS\n${res}`)
-            })*/
-        }
+            }).catch(err => console.log(err))
+            console.log(duvidas)
+            axios.get("https://slack.com/api/chat.getPermalink?token=" + acessToken +"&channel=" + "CHT932M7T" + "&message_ts=" + duvidas[0].ts).then(res => {
+                console.log(res)
+            })
+        
         }
     })
 }
 
 let findPendingDoubts =  (callback)=>{
-    let value = getEarlierDateMillisecs(2)
+    let value = getEarlierDateMillisecs(3)
     //let value = getEarlierDateMillisecs(600)   
     
-    doubts.find({'status':false, 'updateAt':{$lte:value}}, (err, res) =>{
+    doubts.find({status:false}, (err, res) =>{
         if(err) callback(err, null)
         if(res!=null){
             doubt = res
@@ -109,6 +110,11 @@ let findPendingDoubts =  (callback)=>{
     })
     
 }
+
+let d1 = new Date()
+let d2 = new Date()
+
+console.log(d1.getTime() - d2.getTime())
 
 
 const getEarlierDateMillisecs = (minutesBack) => {

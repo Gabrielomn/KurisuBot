@@ -14,8 +14,6 @@
     "express": "4.16.4",
     "axios": "^0.18.0",
     "mongoose": "^5.5.2",
-    "pg": "^7.10.0",
-    "pg-hstore": "^2.3.2",
     "piii": "4.0.2",
     "piii-filters": "1.0.0",
     "sequelize": "^5.7.1",
