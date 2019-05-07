@@ -87,7 +87,7 @@ let update = () =>{
             //NAO TA ATUALIZANDO NO BANCO DE DADOS, CONSERTAR ISSO.
             doubts.updateMany({'status':false}, {$set: {'updateAt': new Date()}})
             if(duvidas.length){
-                bot.postMessageToChannel('monitoria', `Duvidas não respondidas ${idChannelDuvidas}`)
+                bot.postMessageToChannel('dev', `Duvidas não respondidas em <#${idChannelDuvidas}>`)
             /*axios.get("https://slack.com/api/chat.getPermalink?token=" + acessToken +"&channel=" + "CHT932M7T" + "&thread_ts=" + duvidas[0].ts).then(res => {
                 bot.postMessageToChannel('dev', `DUVIDAS NAO RESPONDIDAS SEUS CORNOS\n${res}`)
             })*/
