@@ -23,7 +23,7 @@ bot.on('start', () =>{
 
     setInterval(()=>{
       tools.update()
-    }, /*1 * 60 * */60 * 1000)
+    }, 1 * 60 * 60 * 1000)
 })
 
     //Error Handler

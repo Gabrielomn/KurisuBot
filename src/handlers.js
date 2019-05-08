@@ -25,10 +25,17 @@ var handleMessage = function (data){
         if(tools.isChannel(data.channel)){
             handleChannelMensage(data)
         }else{
-            let msg = msgs.msgParaAluno
-            msg.user = data.user
-            msg.channel = data.channel
-            webClient.chat.postMessage(msg)
+            if(tools.isAdmin(data.user)){
+                let msg = msgs.msgParaAdmin
+                msg.user = data.user
+                msg.channel = data.channel
+                webClient.chat.postMessage(msg)
+            }else{
+                let msg = msgs.msgParaAluno
+                msg.user = data.user
+                msg.channel = data.channel
+                webClient.chat.postMessage(msg)
+            }
         }   
     }else{
         webClient.chat.postMessage({users: data.user, channel: data.channel, text: "Sem palavrão. PALHAÇO"})
