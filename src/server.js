@@ -14,6 +14,10 @@ app.listen(PORT, () =>{
 app.post('/slack/interact', (req, res) => {
     handlers.handleInteraction(req.body)
     console.log('interaction handled')
+    let obj = JSON.parse(req.body.payload)
+    if(obj.callback_id == "command_selection"){
+        res.sendStatus(200)
+    }
     res.send()
 })
 
@@ -23,7 +27,7 @@ bot.on('start', () =>{
 
     setInterval(()=>{
       tools.update()
-    }, /*1 * 60 * */60 * 1000)
+    }, 1 * 60 * 60 * 1000)
 })
 
     //Error Handler
