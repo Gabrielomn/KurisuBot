@@ -63,12 +63,13 @@ handleCommand = obj => {
 
 handleEditCommand = obj => {
     if(obj.submission.edit_delete == "edit"){
-        if(obj.submission.command_name.charAt(0) != "!"){
-            webClient.chat.postMessage({channel : obj.channel.id, text : 'Por favor ponha o "!" na frente do nome do comando.'})
-            return;
-        }
+        
         let query = {}
         if(obj.submission.command_name != null){
+            if(obj.submission.command_name.charAt(0) != "!"){
+                webClient.chat.postMessage({channel : obj.channel.id, text : 'Falha. Por favor ponha o "!" na frente do nome do comando.'})
+                return;
+            }
             query.command = obj.submission.command_name
         }
         if(obj.submission.command_return != null){
@@ -85,7 +86,7 @@ handleEditCommand = obj => {
 
 handleNewCommand = obj => {
     if(obj.submission.command_name.charAt(0) != "!"){
-        webClient.chat.postMessage({channel : obj.channel.id, text : 'Por favor ponha o "!" na frente do nome do comando.'})
+        webClient.chat.postMessage({channel : obj.channel.id, text : 'Falha. Por favor ponha o "!" na frente do nome do comando.'})
         return;
     }
     new commands({
