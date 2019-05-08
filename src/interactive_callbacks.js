@@ -77,7 +77,6 @@ handleEditCommand = obj => {
         }
         commands.updateOne({command : obj.submission.current_command_name}, query).then(() => console.log("Command Updated successfully"))
     }else if(obj.submission.edit_delete == "delete"){
-        console.log(obj)
         commands.deleteOne({command : obj.submission.current_command_name}).then(() => console.log("Command Deleted successfully"))
     }else{
         console.log("Some shit happend")
