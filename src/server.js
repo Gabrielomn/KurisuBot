@@ -3,9 +3,24 @@ const handlers = require('./handlers.js')
 const bodyParser = require('body-parser')
 const express = require('express')
 const tools = require('./tools.js')
+const stats = require('./stats')
+const cors = require('cors')
 const app = express()
 const PORT = 8080
 app.use(bodyParser.urlencoded({extended:true}))
+app.use(cors())
+app.use(express.json(), function (req, res, next) {
+
+    res.header("Allow", "OPTIONS, GET, POST")
+
+    res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+    res.header("Access-Control-Allow-Origin", "*")
+    res.setHeader("Access-Control-Allow-Origin", "*")
+    res.header("Access-Control-Allow-Headers", "Access-Control-Allow-Origin, X-Requested-With, Content-Type, Accept, Authorization")
+    res.setHeader('Access-Control-Allow-Credentials', true)
+    next()
+
+})
 app.listen(PORT, () =>{
     console.log('Server is listening on port: ' + PORT)
 })
@@ -19,6 +34,13 @@ app.post('/slack/interact', (req, res) => {
         res.sendStatus(200)
     }
     res.send()
+})
+
+app.get('/stats', async (req, res) => {
+    let data = await stats.getStats()
+    res.status(200).send(saida = {
+        data
+    })
 })
 
 bot.on('start', () =>{
