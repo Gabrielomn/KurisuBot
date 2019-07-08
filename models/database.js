@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 
 mongoose.Promise = global.Promise
-mongoose.connect("mongodb://localhost/database").then(() => {
+mongoose.connect(process.env.MONGO_URL).then(() => {
   console.log('Database connected')
 }).catch(error => {
   console.log('Erro: ' + error)
