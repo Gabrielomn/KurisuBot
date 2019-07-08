@@ -8,7 +8,7 @@ const {createMessageAdapter} = require('@slack/interactive-messages')
 const slackInteractions = createMessageAdapter(secrets.token)
 const bot = new SlackBot({
     token: secrets.token,
-    name: 'KyoumaBot'
+    name: 'KurisuBot'
 })
 
 module.exports = {
