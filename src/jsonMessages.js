@@ -51,12 +51,13 @@ const msgParaAdmin = {
                     "text": "Editar/Criar Keyword",
                     "type": "button",
                     "value": "keyword"
-                },{
-                    "name": "admin",
-                    "text": "Adcionar ou remover Admins",
-                    "type": "button",
-                    "value": "admin"
                 }
+                // ,{
+                //     "name": "admin",
+                //     "text": "Adcionar ou remover Admins",
+                //     "type": "button",
+                //     "value": "admin"
+                // }
             ]
         }
     ]
