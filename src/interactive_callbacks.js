@@ -18,7 +18,16 @@ handleAlunoChoice = (obj) => {
         handleEditDoubt(obj)
     }else if(obj.actions[0].name === "command"){
         handleCommand(obj)
+    }else if(obj.actions[0].name === "keyword"){
+        handleKeyWord(obj)
     }
+    // else if(obj.actions[0].name === "admins"){
+    //     handleAdmins(obj)
+    // }
+}
+
+handleAdmins = obj => {
+    console.log(obj)
 }
 
 handleEditChoice = obj => {
@@ -92,6 +101,62 @@ handleNewCommand = obj => {
         command : obj.submission.command_name,
         info : obj.submission.command_return
     }).save().then(() => console.log("Command Saved successfully"))
+}
+
+//ATUA SOBRE KEYWORDS
+handleKeyWord = obj => {
+    keywords.find().then(( res )  => {
+        let arr = res.map((keyword)=> {return {value : keyword.key, text : keyword.key}})
+        let msg = JSON.parse(JSON.stringify(msgs.selectKeyword))
+        msg.user = obj.user.id
+        msg.channel = obj.channel.id
+        msg.attachments[0].actions[0].options = arr
+        msg.attachments[0].actions[0].options[arr.length] = {value : "new_keyword", text : "Nova keyword"}
+        webClient.chat.postMessage(msg)
+    })
+}
+
+handleKeywordChoice = obj => {
+    if(obj.actions[0].selected_options[0].value != "new_keyword"){
+        let msg = JSON.parse(JSON.stringify(msgs.editKeyword))
+        msg.trigger_id = obj.trigger_id
+        msg.dialog.elements[0].placeholder = obj.actions[0].selected_options[0].value
+        webClient.dialog.open(msg).catch(err => {
+            console.log(err.data.response_metadata.messages)
+        })
+    }else{
+        let msg = JSON.parse(JSON.stringify(msgs.newKeyword))
+        msg.trigger_id = obj.trigger_id
+        webClient.dialog.open(msg).catch(err => {
+            console.log(err.data.response_metadata.messages)
+        })
+    }
+}
+
+handleEditKeyword = obj => {
+    if(obj.submission.edit_delete == "edit"){
+        
+        let query = {}
+        if(obj.submission.keyword_name != null){
+
+            query.key = obj.submission.keyword_name
+        }
+        if(obj.submission.link != null){
+            query.link = obj.submission.link
+        }
+        keywords.updateOne({key : obj.submission.current_keyword_name}, query).then(() => console.log("KeyWord Updated successfully"))
+    }else if(obj.submission.edit_delete == "delete"){
+        keywords.deleteOne({key : obj.submission.current_keyword_name}).then(() => console.log("Keyword Deleted successfully"))
+    }else{
+        console.log("Some shit happend")
+    }
+}
+
+handleNewKeyword = obj => {
+    new keywords({
+        key : obj.submission.keyword_name,
+        link : obj.submission.link
+    }).save().then(() => console.log("Keyword Saved successfully"))
 }
 
 //ATUAL SOBRE DUVIDAS
@@ -169,5 +234,8 @@ module.exports = {
     "edit_doubt" : handleEditChoice,
     "command_selection" : handleCommandChoice,
     "edit_command" : handleEditCommand,
-    "new_command" : handleNewCommand
+    "new_command" : handleNewCommand,
+    "keyword_selection": handleKeywordChoice,
+    "edit_keyword": handleEditKeyword,
+    "new_keyword": handleNewKeyword
 }
