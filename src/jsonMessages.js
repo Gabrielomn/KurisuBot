@@ -47,15 +47,10 @@ const msgParaAdmin = {
                     "type": "button",
                     "value": "edit_doubt"
                 },{
-                    "name": "keyword",
-                    "text": "Editar/Criar Keyword",
+                    "name": "command",
+                    "text": "Editar/Criar comando",
                     "type": "button",
-                    "value": "keyword"
-                },{
-                    "name": "admin",
-                    "text": "Adcionar ou remover Admins",
-                    "type": "button",
-                    "value": "admin"
+                    "value": "command"
                 }
             ]
         }
@@ -146,27 +141,6 @@ const selectCommand = {
     ]
 }
 
-const selectKeyword = {
-    "attachments": [
-        {
-            "text": "Selecione a Keyword",
-            "color": "#3AA3E3",
-            "attachment_type": "default",
-            "callback_id": "keyword_selection",
-            "actions": [
-                {
-                    "name": "keyword_list",
-                    "text": "Selecione uma keyword...",
-                    "type": "select",
-                    "options": [
-                        
-                    ]
-                }
-            ]
-        }
-    ]
-}
-
 const editCommand = {
 	"dialog": {
 		"callback_id": "edit_command",
@@ -213,52 +187,6 @@ const editCommand = {
 	}
 }
 
-const editKeyword = {
-	"dialog": {
-		"callback_id": "edit_keyword",
-		"title": "Editar Keyword.",
-		"submit_label": "Update!",
-		"notify_on_cancel": false,
-		"state": "Limo",
-		"elements": [
-            {
-				"type": "text",
-				"label": "Atual nome da keyword",
-                "name": "current_keyword_name",
-                "placeholder" :"",
-                "optional" : false
-            },
-			{
-				"type": "text",
-				"label": "Nome da Keyword",
-                "name": "keyword_name",
-                "placeholder" :"Novo nome da keyword. Deixe em branco se não for alterar.",
-                "optional" : true
-            },
-            {
-				"type": "textarea",
-				"label": "Info associada a keyword",
-                "name": "link",
-                "placeholder" :"Nova info da keyword. Deixe em branco se não for alterar.",
-                "optional" : true
-			},{
-				"type": "select",
-				"label": "O que fazer",
-                "name": "edit_delete",
-                "options": [{
-                    "value" : "edit",
-                    "label" : "Editar keyword"
-                    },
-                {
-                    "value" : "delete",
-                    "label" : "Deletar keyword"
-                    }
-                ]
-            }
-		]
-	}
-}
-
 const newCommand = {
 	"dialog": {
 		"callback_id": "new_command",
@@ -285,32 +213,6 @@ const newCommand = {
 	}
 }
 
-const newKeyword = {
-	"dialog": {
-		"callback_id": "new_keyword",
-		"title": "Criar keyword.",
-		"submit_label": "Send",
-		"notify_on_cancel": false,
-		"state": "Limo",
-		"elements": [
-			{
-				"type": "text",
-				"label": "Nome da Keyword",
-                "name": "keyword_name",
-                "placeholder" : 'Nome da Keyword',
-                "optional" : false
-            },
-            {
-				"type": "textarea",
-				"label": "Info associada a keyword",
-                "name": "link",
-                "placeholder" :"Algum material que ajude no topico.",
-                "optional" : false
-			}
-		]
-	}
-}
-
 module.exports = {
     msgParaAluno,
     dialog,
@@ -318,9 +220,6 @@ module.exports = {
     msgParaAdmin,
     editCommand,
     selectCommand,
-    newCommand,
-    selectKeyword,
-    editKeyword,
-    newKeyword
+    newCommand
 }
 
