@@ -21,9 +21,9 @@ handleAlunoChoice = (obj) => {
     }else if(obj.actions[0].name === "keyword"){
         handleKeyWord(obj)
     }
-    // else if(obj.actions[0].name === "admins"){
-    //     handleAdmins(obj)
-    // }
+     else if(obj.actions[0].name === "admins"){
+         handleAdmins(obj)
+     }
 }
 
 handleAdmins = obj => {
@@ -117,15 +117,16 @@ handleKeyWord = obj => {
 }
 
 handleKeywordChoice = obj => {
+    
     if(obj.actions[0].selected_options[0].value != "new_keyword"){
-        let msg = JSON.parse(JSON.stringify(msgs.editKeyword))
+        let msg = JSON.parse(JSON.stringify(msgs.editCommand))
         msg.trigger_id = obj.trigger_id
         msg.dialog.elements[0].placeholder = obj.actions[0].selected_options[0].value
         webClient.dialog.open(msg).catch(err => {
             console.log(err.data.response_metadata.messages)
         })
     }else{
-        let msg = JSON.parse(JSON.stringify(msgs.newKeyword))
+        let msg = JSON.parse(JSON.stringify(msgs.newCommand))
         msg.trigger_id = obj.trigger_id
         webClient.dialog.open(msg).catch(err => {
             console.log(err.data.response_metadata.messages)
@@ -133,31 +134,6 @@ handleKeywordChoice = obj => {
     }
 }
 
-handleEditKeyword = obj => {
-    if(obj.submission.edit_delete == "edit"){
-        
-        let query = {}
-        if(obj.submission.keyword_name != null){
-
-            query.key = obj.submission.keyword_name
-        }
-        if(obj.submission.link != null){
-            query.link = obj.submission.link
-        }
-        keywords.updateOne({key : obj.submission.current_keyword_name}, query).then(() => console.log("KeyWord Updated successfully"))
-    }else if(obj.submission.edit_delete == "delete"){
-        keywords.deleteOne({key : obj.submission.current_keyword_name}).then(() => console.log("Keyword Deleted successfully"))
-    }else{
-        console.log("Some shit happend")
-    }
-}
-
-handleNewKeyword = obj => {
-    new keywords({
-        key : obj.submission.keyword_name,
-        link : obj.submission.link
-    }).save().then(() => console.log("Keyword Saved successfully"))
-}
 
 //ATUAL SOBRE DUVIDAS
 
@@ -234,8 +210,5 @@ module.exports = {
     "edit_doubt" : handleEditChoice,
     "command_selection" : handleCommandChoice,
     "edit_command" : handleEditCommand,
-    "new_command" : handleNewCommand,
-    "keyword_selection": handleKeywordChoice,
-    "edit_keyword": handleEditKeyword,
-    "new_keyword": handleNewKeyword
+    "new_command" : handleNewCommand
 }
