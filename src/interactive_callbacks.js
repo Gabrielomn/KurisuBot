@@ -20,14 +20,13 @@ handleAlunoChoice = (obj) => {
         handleCommand(obj)
     }else if(obj.actions[0].name === "keyword"){
         handleKeyWord(obj)
+    }else if(obj.actions[0].name === "admins"){
+        handleAdmins(obj)
     }
-    // else if(obj.actions[0].name === "admins"){
-    //     handleAdmins(obj)
-    // }
 }
 
 handleAdmins = obj => {
-    console.log(obj)
+    //todo
 }
 
 handleEditChoice = obj => {
