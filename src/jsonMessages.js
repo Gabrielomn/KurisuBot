@@ -47,10 +47,10 @@ const msgParaAdmin = {
                     "type": "button",
                     "value": "edit_doubt"
                 },{
-                    "name": "command",
-                    "text": "Editar/Criar comando",
+                    "name": "keyword",
+                    "text": "Editar/Criar Keyword",
                     "type": "button",
-                    "value": "command"
+                    "value": "keyword"
                 }
             ]
         }
@@ -141,6 +141,27 @@ const selectCommand = {
     ]
 }
 
+const selectKeyword = {
+    "attachments": [
+        {
+            "text": "Selecione a Keyword",
+            "color": "#3AA3E3",
+            "attachment_type": "default",
+            "callback_id": "keyword_selection",
+            "actions": [
+                {
+                    "name": "keyword_list",
+                    "text": "Selecione uma keyword...",
+                    "type": "select",
+                    "options": [
+                        
+                    ]
+                }
+            ]
+        }
+    ]
+}
+
 const editCommand = {
 	"dialog": {
 		"callback_id": "edit_command",
@@ -220,6 +241,7 @@ module.exports = {
     msgParaAdmin,
     editCommand,
     selectCommand,
-    newCommand
+    newCommand,
+    selectKeyword
 }
 

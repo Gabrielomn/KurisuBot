@@ -18,6 +18,8 @@ handleAlunoChoice = (obj) => {
         handleEditDoubt(obj)
     }else if(obj.actions[0].name === "command"){
         handleCommand(obj)
+    }else if(obj.actions[0].name === "keyword"){
+        handleKeyWord(obj)
     }
 }
 
@@ -93,6 +95,38 @@ handleNewCommand = obj => {
         info : obj.submission.command_return
     }).save().then(() => console.log("Command Saved successfully"))
 }
+
+//ATUA SOBRE KEYWORDS
+handleKeyWord = obj => {
+    keywords.find().then(( res )  => {
+        let arr = res.map((keyword)=> {return {value : keyword.key, text : keyword.key}})
+        let msg = JSON.parse(JSON.stringify(msgs.selectKeyword))
+        msg.user = obj.user.id
+        msg.channel = obj.channel.id
+        msg.attachments[0].actions[0].options = arr
+        msg.attachments[0].actions[0].options[arr.length] = {value : "new_keyword", text : "Nova keyword"}
+        webClient.chat.postMessage(msg)
+    })
+}
+
+handleKeywordChoice = obj => {
+    
+    if(obj.actions[0].selected_options[0].value != "new_keyword"){
+        let msg = JSON.parse(JSON.stringify(msgs.editCommand))
+        msg.trigger_id = obj.trigger_id
+        msg.dialog.elements[0].placeholder = obj.actions[0].selected_options[0].value
+        webClient.dialog.open(msg).catch(err => {
+            console.log(err.data.response_metadata.messages)
+        })
+    }else{
+        let msg = JSON.parse(JSON.stringify(msgs.newCommand))
+        msg.trigger_id = obj.trigger_id
+        webClient.dialog.open(msg).catch(err => {
+            console.log(err.data.response_metadata.messages)
+        })
+    }
+}
+
 
 //ATUAL SOBRE DUVIDAS
 
