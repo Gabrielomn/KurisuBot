@@ -4,7 +4,7 @@ const webClient = require('./config').slackWeb
 const keywords = require('../models/KeyWord')
 const doubts = require('../models/Doubt')
 const axios = require('axios')
-const acessToken = require('./secrets').oAuth
+const acessToken = process.env.oAuthToken
 const idChannelDuvidas = "CHT932M7T"
 const workspaces = require('../models/Workspace')
 
@@ -133,7 +133,7 @@ handleCloseDoubt = obj => {
             webClient.chat.postMessage({channel:obj.channel.id,user: obj.user.id, text:"https://media.tenor.com/images/1fd5f445304622bdb2da23c5762ce276/tenor.gif"})
         }
     })
-    axios.get("https://slack.com/api/channels.replies?token=" + acessToken +"&channel=" + idChannelDuvidas + "&thread_ts=" + obj.submission.doubt_select).then(res => {
+    axios.get("https://slack.com/api/channels.replies?token=" + process.env.oAuthToken +"&channel=" + idChannelDuvidas + "&thread_ts=" + obj.submission.doubt_select).then(res => {
         let resp = new Array()
         for(let i = 1; i < res.data.messages.length; i++){
             resp.push(res.data.messages[i].text)

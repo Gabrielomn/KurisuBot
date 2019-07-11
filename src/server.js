@@ -1,5 +1,5 @@
-let bot = require('./config.js').bot
 const dotenv = require('dotenv').config()
+let bot = require('./config.js').bot
 const handlers = require('./handlers.js')
 const bodyParser = require('body-parser')
 const express = require('express')
