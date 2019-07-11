@@ -11,9 +11,7 @@ const PORT = process.env.PORT || 8080
 app.use(bodyParser.urlencoded({extended:true}))
 app.use(cors())
 app.use(express.json(), function (req, res, next) {
-
     res.header("Allow", "OPTIONS, GET, POST")
-
     res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
     res.header("Access-Control-Allow-Origin", "*")
     res.setHeader("Access-Control-Allow-Origin", "*")
@@ -44,7 +42,10 @@ app.get('/stats', async (req, res) => {
     })
 })
 
-bot.on('start', () =>{
+bot.on('start', async () =>{
+
+    await handlers.handleConfiguration()
+
     bot.postMessageToChannel('general', 
     'Im ready guysss')
 
@@ -68,6 +69,7 @@ bot.on('message', (data) => {
         if(data.thread_ts){
             handlers.handleReply(data)
         }else{
+            console.log(data)
             handlers.handleMessage(data)
         }      
     }

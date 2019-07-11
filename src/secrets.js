@@ -5,6 +5,6 @@ const OAuthTokenKurisu = "xoxp-610927659380-600090422514-610939816692-08171c593e
 const idGabriel = "UHN2NCEF4"
 
 module.exports = {
-    oAuth: OAuthTokenKurisu,
-    token: botUserKurisu,
+    oAuth: OAuthTokenKyouma,
+    token: botUserKyouma,
 }

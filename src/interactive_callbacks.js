@@ -6,7 +6,7 @@ const doubts = require('../models/Doubt')
 const axios = require('axios')
 const acessToken = require('./secrets').oAuth
 const idChannelDuvidas = "CHT932M7T"
-const commands = require('../models/Command')
+const workspaces = require('../models/Workspace')
 
 //TOMADAS DE DECISÃO
 
@@ -35,71 +35,6 @@ handleEditChoice = obj => {
     }else if(obj.submission.close_open === "close"){
         handleCloseDoubt(obj)
     }
-}
-
-//ATUA SOBRE COMANDOS.
-
-handleCommandChoice = obj => {
-    
-    if(obj.actions[0].selected_options[0].value != "new_command"){
-        let msg = JSON.parse(JSON.stringify(msgs.editCommand))
-        msg.trigger_id = obj.trigger_id
-        msg.dialog.elements[0].placeholder = obj.actions[0].selected_options[0].value
-        webClient.dialog.open(msg).catch(err => {
-            console.log(err.data.response_metadata.messages)
-        })
-    }else{
-        let msg = JSON.parse(JSON.stringify(msgs.newCommand))
-        msg.trigger_id = obj.trigger_id
-        webClient.dialog.open(msg).catch(err => {
-            console.log(err.data.response_metadata.messages)
-        })
-    }
-}
-
-handleCommand = obj => {
-    commands.find().then(( res )  => {
-        let arr = res.map((command)=> {return {value : command.command, text : command.command}})
-        let msg = JSON.parse(JSON.stringify(msgs.selectCommand))
-        msg.user = obj.user.id
-        msg.channel = obj.channel.id
-        msg.attachments[0].actions[0].options = arr
-        msg.attachments[0].actions[0].options[arr.length] = {value : "new_command", text : "Novo comando"}
-        webClient.chat.postMessage(msg)
-    })
-}
-
-handleEditCommand = obj => {
-    if(obj.submission.edit_delete == "edit"){
-        
-        let query = {}
-        if(obj.submission.command_name != null){
-            if(obj.submission.command_name.charAt(0) != "!"){
-                webClient.chat.postMessage({channel : obj.channel.id, text : 'Falha. Por favor ponha o "!" na frente do nome do comando.'})
-                return;
-            }
-            query.command = obj.submission.command_name
-        }
-        if(obj.submission.command_return != null){
-            query.info = obj.submission.command_return
-        }
-        commands.updateOne({command : obj.submission.current_command_name}, query).then(() => console.log("Command Updated successfully"))
-    }else if(obj.submission.edit_delete == "delete"){
-        commands.deleteOne({command : obj.submission.current_command_name}).then(() => console.log("Command Deleted successfully"))
-    }else{
-        console.log("Some shit happend")
-    }
-}
-
-handleNewCommand = obj => {
-    if(obj.submission.command_name.charAt(0) != "!"){
-        webClient.chat.postMessage({channel : obj.channel.id, text : 'Falha. Por favor ponha o "!" na frente do nome do comando.'})
-        return;
-    }
-    new commands({
-        command : obj.submission.command_name,
-        info : obj.submission.command_return
-    }).save().then(() => console.log("Command Saved successfully"))
 }
 
 //ATUA SOBRE KEYWORDS
@@ -169,7 +104,7 @@ handleOpenDoubt = (obj) => {
         webClient.dialog.open(msg).catch(err => {
             console.log(err.data.response_metadata.messages)
         })
-    })
+    }) 
 }
 
 handleEditDoubt = (obj) => {
@@ -227,14 +162,33 @@ handleNewDoubtDialog = (obj) =>{
     
 }
 
+const handleChannelConfig = async (obj) =>{
+    let channels = await webClient.channels.list()
+    let arr = channels.channels.map((canal) => {return {value : canal.id, label: canal.name}})
+    let msg = JSON.parse(JSON.stringify(msgs.dialogConfig))
+    msg.dialog.elements[0].options = arr
+    msg.trigger_id = obj.trigger_id
+
+    webClient.dialog.open(msg).catch(err => {
+        console.log(err.data.response_metadata.messages)
+    })
+}
+
+const setChannel = (obj) =>{
+    new workspaces({
+        adm : [obj.user.id],
+        workspace : obj.team.domain,
+        channelPost: obj.submission.channel
+    }).save().then(() => console.log("Workspace Saved successfully"))
+
+}
 module.exports = {
     "aluno_choice" : handleAlunoChoice,
     "open_doubt_dialog" : handleNewDoubtDialog,
     "edit_doubt" : handleEditChoice,
-    "command_selection" : handleCommandChoice,
-    "edit_command" : handleEditCommand,
-    "new_command" : handleNewCommand,
     "keyword_selection": handleKeywordChoice,
     "edit_keyword": handleEditKeyword,
-    "new_keyword": handleNewKeyword
+    "new_keyword": handleNewKeyword,
+    "chose_doubt_channel" : handleChannelConfig,
+    "config_channel" : setChannel
 }

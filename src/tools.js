@@ -5,7 +5,8 @@ const channels =[idChannelGeneral, idChannelDuvidas]
 const acessToken = require('./secrets').oAuth;
 const webClient = require('./config').slackWeb
 const doubts = require('./../models/Doubt')
-const commands = require('./../models/Command');
+const workspaces = require('../models/Workspace')
+const msgs = require('./jsonMessages')
 const axios = require('axios')
 const admins = ["UHN2NCEF4", "UHU430TCH"]
 
@@ -74,62 +75,31 @@ const getEarlierDateMillisecs = (minutesBack) => {
     return date
 }
 
-//METODOS QUE ATUAM SOBRE OS COMANDOS
-var getCommand = (text, callback) => {
-    commands.findOne({'command' : text}, (err, res) => {
-        if(err) callback(err, null)
-        if(res != null){
-            info = res.info
-            callback(null, info)
-        }else{
-            if(text.charAt(0) === "!"){
-                info = "Comando inexistente"
-                callback(null, info)
-            }
+const validateWorkSpace = async () =>{ //mudar pro tools
+    let workSpaceName = await webClient.team.info()
+    let response = await workspaces.findOne({'workspace': workSpaceName.team.domain})
+    return response
+}
+
+const sendConfigDialog = async () => { //mudar pro tools
+    let primaryOwner = await searchPrimaryOwner()
+    let msg = msgs.menuConfig
+    let channel = await webClient.im.open({'user' : primaryOwner})
+    msg.user = primaryOwner
+    msg.channel = channel.channel.id
+    webClient.chat.postMessage(msg)
+}
+
+const searchPrimaryOwner = async () => { //mudar pro tools
+    let owner = await webClient.users.list()
+    let idOwner;
+    for(let i in owner.members){
+        if(owner.members[i].is_primary_owner){
+            idOwner = owner.members[i].id
+            break
         }
-    })
-}
-
-var postCommand = (data) => {
-    getCommand(data.text, (err, info) => {
-        if(err) console.log("erro: " + err)
-        else{
-            bot.postEphemeral(data.channel, data.user, info)
-        }
-    })
-    
-}
-
-var admCommands = ['!addCommand', '!delCommand']
-
-var isCommand = (msg) =>  {
-    if(admCommands.includes(msg)){
-        return true
-    }else{
-        return false;
     }
-} 
-
-var saveCommand = (msg) => {
-    let c = msg.split(" ")
-
-    if(c.length == 2){
-        new commands({
-            command:c[0],
-            info:c[1]
-    }).save().then(() => {
-        console.log('Novo comando salvo com sucesso')
-    }).catch(err => {
-        console.log('erro: ' + err)
-        })
-    }
-}
-
-var delCommand = (comando) => {
-    commands.deleteOne({'command' : comando},(err, res) => {
-        if(err) console.log('Erro ao deletar o comando '+comando + ", erro: " + err)
-        console.log("Comando deletado com sucesso")
-    })
+    return idOwner
 }
 
 //METODOS QUE ATUAM SOBRE AS DUVIDAS
@@ -173,12 +143,10 @@ module.exports = {
     getUserNameById,
     isChannel,
     saveDoubt,
-    isCommand,
-    saveCommand,
-    postCommand,
     isAdmin,
-    delCommand,
     update,
     findPendingDoubts,
-    closeDoubt
+    closeDoubt,
+    validateWorkSpace,
+    sendConfigDialog
 }

@@ -1,6 +1,5 @@
 const piii = require('./StinkyWordsFilter')
 const tools = require('./tools.js')
-const secrets = require('./secrets')
 const bot = require('./config').bot
 const webClient = require('./config').slackWeb
 const msgs = require('./jsonMessages')
@@ -42,10 +41,17 @@ var handleMessage = function (data){
     }
 }
 
+const handleConfiguration = async () => {
+    if(await tools.validateWorkSpace()){
+        console.log("WorkSpace already registred")
+    }else{
+        await tools.sendConfigDialog() 
+    }
+}
+
 var handleChannelMensage = function (data){
     tools.postCommand(data)
 }
-
 
 
 var returnMessage = function (id, resposta){
@@ -59,6 +65,7 @@ module.exports = {
     handleReply,
     handleInteraction,
     handleChannelMensage,
-    returnMessage
+    returnMessage,
+    handleConfiguration
     
 }

@@ -52,12 +52,6 @@ const msgParaAdmin = {
                     "type": "button",
                     "value": "keyword"
                 }
-                // ,{
-                //     "name": "admin",
-                //     "text": "Adcionar ou remover Admins",
-                //     "type": "button",
-                //     "value": "admin"
-                // }
             ]
         }
     ]
@@ -126,27 +120,6 @@ const showDoubts = {
 	}
 }
 
-const selectCommand = {
-    "attachments": [
-        {
-            "text": "Selecione o comando",
-            "color": "#3AA3E3",
-            "attachment_type": "default",
-            "callback_id": "command_selection",
-            "actions": [
-                {
-                    "name": "command_list",
-                    "text": "Selecione um comando...",
-                    "type": "select",
-                    "options": [
-                        
-                    ]
-                }
-            ]
-        }
-    ]
-}
-
 const selectKeyword = {
     "attachments": [
         {
@@ -166,52 +139,6 @@ const selectKeyword = {
             ]
         }
     ]
-}
-
-const editCommand = {
-	"dialog": {
-		"callback_id": "edit_command",
-		"title": "Editar Comando.",
-		"submit_label": "Send",
-		"notify_on_cancel": false,
-		"state": "Limo",
-		"elements": [
-            {
-				"type": "text",
-				"label": "Atual nome do comando",
-                "name": "current_command_name",
-                "placeholder" :"",
-                "optional" : false
-            },
-			{
-				"type": "text",
-				"label": "Nome do comando",
-                "name": "command_name",
-                "placeholder" :"Novo nome do comando. Deixe em branco se não for alterar.",
-                "optional" : true
-            },
-            {
-				"type": "textarea",
-				"label": "Retorno do comando",
-                "name": "command_return",
-                "placeholder" :"Novo retorno do comando. Deixe em branco se não for alterar.",
-                "optional" : true
-			},{
-				"type": "select",
-				"label": "O que fazer",
-                "name": "edit_delete",
-                "options": [{
-                    "value" : "edit",
-                    "label" : "Editar comando"
-                    },
-                {
-                    "value" : "delete",
-                    "label" : "Deletar comando"
-                    }
-                ]
-            }
-		]
-	}
 }
 
 const editKeyword = {
@@ -260,32 +187,6 @@ const editKeyword = {
 	}
 }
 
-const newCommand = {
-	"dialog": {
-		"callback_id": "new_command",
-		"title": "Criar Comando.",
-		"submit_label": "Send",
-		"notify_on_cancel": false,
-		"state": "Limo",
-		"elements": [
-			{
-				"type": "text",
-				"label": "Nome do comando",
-                "name": "command_name",
-                "placeholder" : 'Nome do comando. Coloque o "!" na frente',
-                "optional" : false
-            },
-            {
-				"type": "textarea",
-				"label": "Retorno do comando",
-                "name": "command_return",
-                "placeholder" :"Retorno do comando.",
-                "optional" : false
-			}
-		]
-	}
-}
-
 const newKeyword = {
 	"dialog": {
 		"callback_id": "new_keyword",
@@ -312,16 +213,60 @@ const newKeyword = {
 	}
 }
 
+const dialogConfig = {
+	"dialog": {
+		"callback_id": "config_channel",
+		"title": "Configuração inicial",
+		"submit_label": "Send",
+		"notify_on_cancel": false,
+		"state": "Limo",
+		"elements": [{
+				"type": "select",
+				"label": "Canal onde as dúvidas seram postadas",
+                "name": "channel",
+                "options": [
+                ]
+			}
+		]
+	}
+}
+
+const menuConfig = {
+    "text": "Configuração do bot",
+    "attachments": [
+        {
+            "text": "Lets go",
+            "fallback": "You are unable to choose a game",
+            "callback_id": "chose_doubt_channel",
+            "color": "#3AA3E3",
+            "attachment_type": "default",
+            "actions": [
+                {
+                    "name": "chose_channel",
+                    "text": "Configurar canal de dúvidas",
+                    "type": "button",
+                    "value": "chose_channel"
+                },
+                {
+                    "name": "add_adms",
+                    "text": "Adicionar administradores",
+                    "type": "button",
+                    "value": "add_adms"
+                }
+            ]
+        }
+    ]
+}
+
 module.exports = {
     msgParaAluno,
     dialog,
     showDoubts,
     msgParaAdmin,
-    editCommand,
-    selectCommand,
-    newCommand,
     selectKeyword,
     editKeyword,
-    newKeyword
+    newKeyword,
+    menuConfig,
+    dialogConfig
 }
 
