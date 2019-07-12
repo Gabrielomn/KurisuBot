@@ -1,1 +1,1 @@
-{"options":{},"indexes":[{"v":2,"key":{"_id":1},"name":"_id_","ns":"database.doubts"}],"uuid":"dd5a2c226dc24f3c85bbcf0514afa92a"}
+{"options":{},"indexes":[{"v":2,"key":{"_id":1},"name":"_id_","ns":"database.doubts"},{"v":2,"unique":true,"key":{"ts":1},"name":"ts_1","ns":"database.doubts","background":true}],"uuid":"e36ae12ade054094b507328ae8cf3cdc"}

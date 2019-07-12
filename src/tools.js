@@ -103,7 +103,7 @@ const searchPrimaryOwner = async () => { //mudar pro tools
 }
 
 //METODOS QUE ATUAM SOBRE AS DUVIDAS
-var saveDoubt = (ts, tema, msg, id) => {
+var saveDoubt = (ts, tema, msg, id, workspace) => {
     let date = new Date()
     new doubts ({
         ts: ts,
@@ -112,6 +112,7 @@ var saveDoubt = (ts, tema, msg, id) => {
         idUser: id,
         status: false,
         resposta: '',
+        workspace,
         createAt: date,
         updateAt: date
     }).save().then(()=>{

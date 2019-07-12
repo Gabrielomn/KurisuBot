@@ -25,6 +25,11 @@ const DoubtSchema = mongo.Schema({
         type: Array,
         require: false
     },
+    workspace:{
+        type: String,
+        require: true
+    }
+    ,
     createAt:{
         type: Date,
         require: true

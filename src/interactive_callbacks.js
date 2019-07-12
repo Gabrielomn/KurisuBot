@@ -4,7 +4,7 @@ const webClient = require('./config').slackWeb
 const keywords = require('../models/KeyWord')
 const doubts = require('../models/Doubt')
 const axios = require('axios')
-const acessToken = process.env.oAuthToken
+const acessToken = require('./secrets').oAuth
 const idChannelDuvidas = "CHT932M7T"
 const workspaces = require('../models/Workspace')
 
@@ -39,7 +39,7 @@ handleEditChoice = obj => {
 
 //ATUA SOBRE KEYWORDS
 handleKeyWord = obj => {
-    keywords.find().then(( res )  => {
+    keywords.find({'workspace' : obj.team.domain}).then(( res )  => {
         let arr = res.map((keyword)=> {return {value : keyword.key, text : keyword.key}})
         let msg = JSON.parse(JSON.stringify(msgs.selectKeyword))
         msg.user = obj.user.id
@@ -78,9 +78,9 @@ handleEditKeyword = obj => {
         if(obj.submission.link != null){
             query.link = obj.submission.link
         }
-        keywords.updateOne({key : obj.submission.current_keyword_name}, query).then(() => console.log("KeyWord Updated successfully"))
+        keywords.updateOne({key : obj.submission.current_keyword_name, 'workspace' : obj.team.domain}, query).then(() => console.log("KeyWord Updated successfully"))
     }else if(obj.submission.edit_delete == "delete"){
-        keywords.deleteOne({key : obj.submission.current_keyword_name}).then(() => console.log("Keyword Deleted successfully"))
+        keywords.deleteOne({key : obj.submission.current_keyword_name,'workspace' : obj.team.domain}).then(() => console.log("Keyword Deleted successfully"))
     }else{
         console.log("Some shit happend")
     }
@@ -89,14 +89,15 @@ handleEditKeyword = obj => {
 handleNewKeyword = obj => {
     new keywords({
         key : obj.submission.keyword_name,
-        link : obj.submission.link
+        link : obj.submission.link,
+        workspace: obj.team.domain
     }).save().then(() => console.log("Keyword Saved successfully"))
 }
 
 //ATUAL SOBRE DUVIDAS
 
 handleOpenDoubt = (obj) => {
-    keywords.find().then(( res )  => {
+    keywords.find({'workspace' : obj.team.domain}).then(( res )  => {
         let arr = res.map((categoria)=> {return {value : categoria.key, label : categoria.key}})
         let msg = JSON.parse(JSON.stringify(msgs.dialog))
         msg.trigger_id = obj.trigger_id
@@ -133,7 +134,7 @@ handleCloseDoubt = obj => {
             webClient.chat.postMessage({channel:obj.channel.id,user: obj.user.id, text:"https://media.tenor.com/images/1fd5f445304622bdb2da23c5762ce276/tenor.gif"})
         }
     })
-    axios.get("https://slack.com/api/channels.replies?token=" + process.env.oAuthToken +"&channel=" + idChannelDuvidas + "&thread_ts=" + obj.submission.doubt_select).then(res => {
+    axios.get("https://slack.com/api/channels.replies?token=" + acessToken +"&channel=" + idChannelDuvidas + "&thread_ts=" + obj.submission.doubt_select).then(res => {
         let resp = new Array()
         for(let i = 1; i < res.data.messages.length; i++){
             resp.push(res.data.messages[i].text)
@@ -152,11 +153,12 @@ handleNewDoubtDialog = (obj) =>{
     let msg = obj.submission.doubt_body
     let idUser = obj.user.id
     let categoria = obj.submission.doubt_category
+    let workspace = obj.team.domain
     let mensagem = `Nova dúvida sobre: *${categoria.toUpperCase()}*\nDuvida: ${msg}` 
     webClient.chat.postMessage({channel : idChannelDuvidas, text : mensagem}).then((res) => {
-        tools.saveDoubt(res.ts, categoria, msg, idUser)
+        tools.saveDoubt(res.ts, categoria, msg, idUser, workspace)
     })
-    keywords.findOne({"key" : obj.submission.doubt_category}).then(res => {
+    keywords.findOne({"key" : obj.submission.doubt_category, "workspace" : obj.team.domain}).then(res => {
         webClient.chat.postMessage({channel: obj.channel.id, text : `Enquanto ninguém responde sua dúvida este *link sobre ${categoria}* pode ser útil: \n` + res.link})
     })
     

@@ -69,7 +69,6 @@ bot.on('message', (data) => {
         if(data.thread_ts){
             handlers.handleReply(data)
         }else{
-            console.log(data)
             handlers.handleMessage(data)
         }      
     }

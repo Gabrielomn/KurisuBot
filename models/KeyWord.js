@@ -7,6 +7,10 @@ const KeyWordSchema = mongo.Schema({
     link:{
         type: String,
         require: true
+    },
+    workspace:{
+        type: String,
+        require: true
     }
 })
 
