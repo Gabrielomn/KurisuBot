@@ -25,6 +25,11 @@ app.listen(PORT, () =>{
 })
 //============================================== STATUS ==============================================
 
+app.post('/slack/slashcommand', (req,res) => {
+    handlers.handleAddAdm(req.body)
+    res.send()
+})
+
 app.post('/slack/interact', (req, res) => {
     handlers.handleInteraction(req.body)
     console.log('interaction handled')

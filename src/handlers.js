@@ -9,11 +9,23 @@ let handleReply = function(data) {
     tools.closeDoubt(data)
 }
 
+let handleAddAdm = async (body) => {
+    let user = body.user_id
+    let workspace = body.team_domain
+    let validation = await tools.isAdmin(user, workspace)
+    if(validation){
+        let msg = 'Naice'
+        tools.sendDM(user, msg)
+    }else{
+        let msg = 'Só ADMs tem permissão para adicionar novos ADMs.'
+        tools.sendDM(user, msg)
+    }
+}
+
 let handleInteraction = function(body) {
     let obj = JSON.parse(body.payload)
     console.log(obj.callback_id)
     interactive_callbacks[obj.callback_id](obj)
-
 }
 
 var handleMessage = function (data){
@@ -22,7 +34,7 @@ var handleMessage = function (data){
 
         id = data.user
         if(tools.isChannel(data.channel)){
-            handleChannelMensage(data)
+            continue
         }else{
             if(tools.isAdmin(data.user)){
                 let msg = msgs.msgParaAdmin
@@ -49,23 +61,16 @@ const handleConfiguration = async () => {
     }
 }
 
-var handleChannelMensage = function (data){
-    tools.postCommand(data)
-}
-
-
 var returnMessage = function (id, resposta){
     bot.postMessageToUser(tools.getUserNameById(bot.users, id), resposta)  
 }
-
-
 
 module.exports = {
     handleMessage,
     handleReply,
     handleInteraction,
-    handleChannelMensage,
     returnMessage,
-    handleConfiguration
+    handleConfiguration,
+    handleAddAdm
     
 }

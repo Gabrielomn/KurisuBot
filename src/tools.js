@@ -28,8 +28,9 @@ var isChannel = function(string){
     }
 }
 
-var isAdmin = (user) => {
-    return admins.includes(user)
+var isAdmin = async (user, workspace) => {
+    let query = await workspaces.findOne({'workspace' : workspace})
+    return query.adm.includes(user)
 }
 
 const MINUTESBACK = 3
@@ -75,13 +76,13 @@ const getEarlierDateMillisecs = (minutesBack) => {
     return date
 }
 
-const validateWorkSpace = async () =>{ //mudar pro tools
+const validateWorkSpace = async () =>{
     let workSpaceName = await webClient.team.info()
     let response = await workspaces.findOne({'workspace': workSpaceName.team.domain})
     return response
 }
 
-const sendConfigDialog = async () => { //mudar pro tools
+const sendConfigDialog = async () => {
     let primaryOwner = await searchPrimaryOwner()
     let msg = msgs.menuConfig
     let channel = await webClient.im.open({'user' : primaryOwner})
@@ -90,7 +91,7 @@ const sendConfigDialog = async () => { //mudar pro tools
     webClient.chat.postMessage(msg)
 }
 
-const searchPrimaryOwner = async () => { //mudar pro tools
+const searchPrimaryOwner = async () => {
     let owner = await webClient.users.list()
     let idOwner;
     for(let i in owner.members){
@@ -140,6 +141,15 @@ var closeDoubt = function(data) {
     }
 }
 
+
+const sendDM = async (user, text) =>{
+    let msg = {}
+    let channel = await webClient.im.open({'user' : user})
+    msg.text = text
+    msg.user = user
+    msg.channel = channel.channel.id
+    webClient.chat.postMessage(msg)
+}
 module.exports = {
     getUserNameById,
     isChannel,
@@ -149,5 +159,6 @@ module.exports = {
     findPendingDoubts,
     closeDoubt,
     validateWorkSpace,
-    sendConfigDialog
+    sendConfigDialog,
+    sendDM
 }
