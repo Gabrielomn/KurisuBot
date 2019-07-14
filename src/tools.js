@@ -141,7 +141,6 @@ var closeDoubt = function(data) {
     }
 }
 
-
 const sendDM = async (user, text) =>{
     let msg = {}
     let channel = await webClient.im.open({'user' : user})
@@ -149,6 +148,39 @@ const sendDM = async (user, text) =>{
     msg.user = user
     msg.channel = channel.channel.id
     webClient.chat.postMessage(msg)
+}
+
+const findIdByName = async (names) => {
+    let users = await webClient.users.list()
+    users = users.members
+    let ids = []
+    let editName = ""
+    for(let i in names){
+        editName = names[i].substring(1)
+        for(let c in users){
+            if(editName == users[c].name){
+                ids.push(users[c].id)
+                break
+            }
+        }
+    }
+    return ids
+}
+
+// ADD ADMS
+
+const addAdms = async (names, workspace) => {
+    let newAdms = names.split(" ")
+    let currAdms = await workspaces.findOne({'workspace' : workspace})
+    currAdms = currAdms.adm
+    newAdms = await findIdByName(newAdms)
+    for(let i in newAdms){
+        if(!currAdms.includes(newAdms[i])){
+            currAdms.push(newAdms[i])
+        }
+    }
+    await workspaces.updateOne({'workspace' : workspace}, {'adm' : currAdms})
+    console.log("Novos ADMs adicionados com sucesso.")
 }
 module.exports = {
     getUserNameById,
@@ -160,5 +192,6 @@ module.exports = {
     closeDoubt,
     validateWorkSpace,
     sendConfigDialog,
-    sendDM
+    sendDM,
+    addAdms
 }

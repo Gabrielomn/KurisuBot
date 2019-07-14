@@ -14,6 +14,7 @@ let handleAddAdm = async (body) => {
     let workspace = body.team_domain
     let validation = await tools.isAdmin(user, workspace)
     if(validation){
+        tools.addAdms(body.text, workspace)
         let msg = 'Naice'
         tools.sendDM(user, msg)
     }else{
