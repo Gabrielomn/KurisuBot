@@ -167,13 +167,15 @@ const findIdByName = async (names) => {
     return ids
 }
 
-// ADD ADMS
+// ADM CONFIG
 
 const addAdms = async (names, workspace) => {
     let newAdms = names.split(" ")
     let currAdms = await workspaces.findOne({'workspace' : workspace})
     currAdms = currAdms.adm
     newAdms = await findIdByName(newAdms)
+    console.log(newAdms)
+
     for(let i in newAdms){
         if(!currAdms.includes(newAdms[i])){
             currAdms.push(newAdms[i])
@@ -181,6 +183,16 @@ const addAdms = async (names, workspace) => {
     }
     await workspaces.updateOne({'workspace' : workspace}, {'adm' : currAdms})
     console.log("Novos ADMs adicionados com sucesso.")
+}
+
+const delAdms = async (names, workspace) => {
+    let newAdms = names.split(" ")
+    let currAdms = await workspaces.findOne({'workspace' : workspace})
+    currAdms = currAdms.adm
+    newAdms = await findIdByName(newAdms)
+    currAdms = currAdms.filter((adm) => !newAdms.includes(adm))
+    await workspaces.updateOne({'workspace' : workspace}, {'adm' : currAdms})
+    console.log("Adm's deletados com sucesso")
 }
 module.exports = {
     getUserNameById,
@@ -193,5 +205,6 @@ module.exports = {
     validateWorkSpace,
     sendConfigDialog,
     sendDM,
-    addAdms
+    addAdms,
+    delAdms
 }

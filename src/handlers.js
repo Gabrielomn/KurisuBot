@@ -9,16 +9,26 @@ let handleReply = function(data) {
     tools.closeDoubt(data)
 }
 
-let handleAddAdm = async (body) => {
+let handleSlashCommand = async (body) => {
+    if(body.command === "/addadm" || body.command === "/deladm"){
+        handleAdmConfig(body)
+    }
+}
+
+let handleAdmConfig = async (body) => {
     let user = body.user_id
     let workspace = body.team_domain
     let validation = await tools.isAdmin(user, workspace)
     if(validation){
-        tools.addAdms(body.text, workspace)
+        if(body.command === "/addadm"){
+            tools.addAdms(body.text, workspace)
+        }else{
+            tools.delAdms(body.text, workspace)
+        }
         let msg = 'Naice'
         tools.sendDM(user, msg)
     }else{
-        let msg = 'Só ADMs tem permissão para adicionar novos ADMs.'
+        let msg = 'Só ADMs tem permissão usar esse comando.'
         tools.sendDM(user, msg)
     }
 }
@@ -35,7 +45,7 @@ var handleMessage = function (data){
 
         id = data.user
         if(tools.isChannel(data.channel)){
-            continue
+            
         }else{
             if(tools.isAdmin(data.user)){
                 let msg = msgs.msgParaAdmin
@@ -72,6 +82,6 @@ module.exports = {
     handleInteraction,
     returnMessage,
     handleConfiguration,
-    handleAddAdm
+    handleSlashCommand
     
 }
