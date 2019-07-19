@@ -11,6 +11,10 @@ const WorkSpaceSchema = mongo.Schema({
     channelPost:{
         type: String,
         require: true
+    },
+    channelNotification:{
+        type: String,
+        require: true
     }
 })
 

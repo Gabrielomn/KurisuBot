@@ -222,11 +222,18 @@ const dialogConfig = {
 		"state": "Limo",
 		"elements": [{
 				"type": "select",
-				"label": "Canal onde as dúvidas seram postadas",
-                "name": "channel",
+				"label": "Canal das dúvidas",
+                "name": "channelPost",
                 "options": [
                 ]
-			}
+            },
+            {
+				"type": "select",
+				"label": "Canal dos monitores",
+                "name": "channelNotification",
+                "options": [
+                ]
+            }
 		]
 	}
 }
@@ -243,15 +250,9 @@ const menuConfig = {
             "actions": [
                 {
                     "name": "chose_channel",
-                    "text": "Configurar canal de dúvidas",
+                    "text": "Configuração inicial",
                     "type": "button",
                     "value": "chose_channel"
-                },
-                {
-                    "name": "add_adms",
-                    "text": "Adicionar administradores",
-                    "type": "button",
-                    "value": "add_adms"
                 }
             ]
         }

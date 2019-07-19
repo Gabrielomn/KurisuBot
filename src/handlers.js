@@ -22,11 +22,13 @@ let handleAdmConfig = async (body) => {
     if(validation){
         if(body.command === "/addadm"){
             tools.addAdms(body.text, workspace)
+            let msg = 'Novos administradores adicionados com sucesso'
+            tools.sendDM(user, msg)
         }else{
             tools.delAdms(body.text, workspace)
+            let msg = 'Administradores deletados com sucesso'
+            tools.sendDM(user, msg)
         }
-        let msg = 'Naice'
-        tools.sendDM(user, msg)
     }else{
         let msg = 'Só ADMs tem permissão usar esse comando.'
         tools.sendDM(user, msg)

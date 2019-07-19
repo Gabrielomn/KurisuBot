@@ -169,6 +169,7 @@ const handleChannelConfig = async (obj) =>{
     let arr = channels.channels.map((canal) => {return {value : canal.id, label: canal.name}})
     let msg = JSON.parse(JSON.stringify(msgs.dialogConfig))
     msg.dialog.elements[0].options = arr
+    msg.dialog.elements[1].options = arr
     msg.trigger_id = obj.trigger_id
 
     webClient.dialog.open(msg).catch(err => {
@@ -180,7 +181,8 @@ const setChannel = (obj) =>{
     new workspaces({
         adm : [obj.user.id],
         workspace : obj.team.domain,
-        channelPost: obj.submission.channel
+        channelPost: obj.submission.channelPost,
+        channelNotification: obj.submission.channelNotification
     }).save().then(() => console.log("Workspace Saved successfully"))
 
 }
