@@ -55,10 +55,9 @@ bot.on('start', async () =>{
 
     bot.postMessageToChannel('general', 
     'Im ready guysss')
-
     setInterval(()=>{
-      tools.update()
-    }, 1 * 60 * 60 * 1000)
+    tools.update()
+    }, /*1 * 60 * */ 60 * 1000)
 })
 
     //Error Handler

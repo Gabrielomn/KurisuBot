@@ -5,7 +5,6 @@ const keywords = require('../models/KeyWord')
 const doubts = require('../models/Doubt')
 const axios = require('axios')
 const acessToken = require('./secrets').oAuth
-const idChannelDuvidas = "CHT932M7T"
 const workspaces = require('../models/Workspace')
 
 //TOMADAS DE DECISÃO
@@ -120,21 +119,22 @@ handleEditDoubt = (obj) => {
     })
 }
 
-handleKeepOpenDoubt = (obj) => {
-    webClient.chat.postMessage({channel : idChannelDuvidas, thread_ts : obj.submission.doubt_select, text : obj.submission.doubt_body}).catch(err => {
+handleKeepOpenDoubt = async (obj) => {
+    webClient.chat.postMessage({channel : await tools.getPostChannel(), thread_ts : obj.submission.doubt_select, text : obj.submission.doubt_body}).catch(err => {
         if(err.data.error === "no_text"){
             webClient.chat.postMessage({channel:obj.channel.id,user: obj.user.id, text:"https://giphy.com/gifs/why-ryan-reynolds-1M9fmo1WAFVK0"})
         }
     })
 }
 
-handleCloseDoubt = obj => {
-    webClient.chat.postMessage({channel : idChannelDuvidas, thread_ts : obj.submission.doubt_select, text : obj.submission.doubt_body}).catch(err => {
+handleCloseDoubt = async obj => {
+    const channelDuvidas = await tools.getPostChannel()
+    webClient.chat.postMessage({channel : channelDuvidas, thread_ts : obj.submission.doubt_select, text : obj.submission.doubt_body}).catch(err => {
         if(err.data.error === "no_text"){
             webClient.chat.postMessage({channel:obj.channel.id,user: obj.user.id, text:"https://media.tenor.com/images/1fd5f445304622bdb2da23c5762ce276/tenor.gif"})
         }
     })
-    axios.get("https://slack.com/api/channels.replies?token=" + acessToken +"&channel=" + idChannelDuvidas + "&thread_ts=" + obj.submission.doubt_select).then(res => {
+    axios.get("https://slack.com/api/channels.replies?token=" + acessToken +"&channel=" + channelDuvidas + "&thread_ts=" + obj.submission.doubt_select).then(res => {
         let resp = new Array()
         for(let i = 1; i < res.data.messages.length; i++){
             resp.push(res.data.messages[i].text)
@@ -149,13 +149,13 @@ handleCloseDoubt = obj => {
     })
 }
 
-handleNewDoubtDialog = (obj) =>{
+handleNewDoubtDialog = async (obj) =>{
     let msg = obj.submission.doubt_body
     let idUser = obj.user.id
     let categoria = obj.submission.doubt_category
     let workspace = obj.team.domain
     let mensagem = `Nova dúvida sobre: *${categoria.toUpperCase()}*\nDuvida: ${msg}` 
-    webClient.chat.postMessage({channel : idChannelDuvidas, text : mensagem}).then((res) => {
+    webClient.chat.postMessage({channel : await tools.getPostChannel(), text : mensagem}).then((res) => {
         tools.saveDoubt(res.ts, categoria, msg, idUser, workspace)
     })
     keywords.findOne({"key" : obj.submission.doubt_category, "workspace" : obj.team.domain}).then(res => {

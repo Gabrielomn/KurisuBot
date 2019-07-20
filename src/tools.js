@@ -1,14 +1,10 @@
-const idChannelGeneral = "CHN2NCVU2"
-const idChannelDuvidas = "CHT932M7T"
 const bot = require('./config').bot
-const channels =[idChannelGeneral, idChannelDuvidas]
-const acessToken = require('./secrets').oAuth;
+const acessToken = process.env.oAuthToken;
 const webClient = require('./config').slackWeb
 const doubts = require('./../models/Doubt')
 const workspaces = require('../models/Workspace')
 const msgs = require('./jsonMessages')
 const axios = require('axios')
-const admins = ["UHN2NCEF4", "UHU430TCH"]
 
 var getUserNameById = function (lista, id){
     let listaAux
@@ -29,24 +25,27 @@ var isChannel = function(string){
 }
 
 var isAdmin = async (user, workspace) => {
-    let query = await workspaces.findOne({'workspace' : workspace})
+    let query = await workspaces.findOne({workspace : workspace})
     return query.adm.includes(user)
 }
 
 const MINUTESBACK = 3
 
 let update = () =>{
-    findPendingDoubts((err, duvidas) => {
+    findPendingDoubts(async (err, duvidas) => {
         if(err) console.log('erro: ' + err)
         else{
+            let workspace = bot.team.domain
             let date = getEarlierDateMillisecs(MINUTESBACK)
-            doubts.updateMany({status:false, updateAt: {$lt: date}},{updateAt : new Date()}).then(res => {
+            doubts.updateMany({workspace: workspace, status:false, updateAt: {$lt: date}},{updateAt : new Date()}).then(res => {
             }).catch(err => console.log(err))
             if(duvidas.length){
-                bot.postMessageToChannel('dev',"*Duvidas em aberto:* ")
+                let postChannel = await getPostChannel()
+                let notificationChannel = await getNotificationChannel()
+                webClient.chat.postMessage({channel: notificationChannel, text: "*Duvidas em aberto:* "}).catch(res => console.log(res))
                 for(let i = 0; i < duvidas.length; i++){
-                    axios.get("https://slack.com/api/chat.getPermalink?token=" + acessToken +"&channel=" + "CHT932M7T" + "&message_ts=" + duvidas[i].ts).then(res => {
-                        bot.postMessageToChannel('dev', "\n" + `Tópico: ${duvidas[i].topico}. --> Link para a *<${res.data.permalink}|dúvida>*`)      
+                    axios.get("https://slack.com/api/chat.getPermalink?token=" + acessToken +"&channel=" + postChannel + "&message_ts=" + duvidas[i].ts).then(res => {
+                        webClient.chat.postMessage({channel: notificationChannel,text: `\n Tópico: ${duvidas[i].topico}. --> Link para a *<${res.data.permalink}|dúvida>*`})      
                     })
                 }
                 
@@ -58,7 +57,8 @@ let update = () =>{
 let findPendingDoubts =  (callback)=>{
     let date = getEarlierDateMillisecs(MINUTESBACK)
     console.log('looking for pending doubts')
-    doubts.find({status:false, updateAt: {$lt: date}}, (err, res) =>{
+    let workspace = bot.team.domain
+    doubts.find({workspace: workspace,status:false, updateAt: {$lt: date}}, (err, res) =>{
         if(err) callback(err, null)
         if(res!=null){
             doubt = res
@@ -194,6 +194,27 @@ const delAdms = async (names, workspace) => {
     await workspaces.updateOne({'workspace' : workspace}, {'adm' : currAdms})
     console.log("Adm's deletados com sucesso")
 }
+
+const getChannelName = (id) => {
+    for(i in bot.channels){
+        if(bot.channels[i].id === id){
+            return bot.channels[i].name
+        }
+    }
+}
+
+const getPostChannel = async () =>{
+    let workspace = await workspaces.findOne({workspace:bot.team.domain})
+    console.log(workspace.channelPost)
+    return workspace.channelPost
+}
+
+const getNotificationChannel = async () => {
+    let workspace = await workspaces.findOne({workspace:bot.team.domain})
+    console.log(workspace.channelNotification)
+    return workspace.channelNotification
+}
+
 module.exports = {
     getUserNameById,
     isChannel,
@@ -206,5 +227,7 @@ module.exports = {
     sendConfigDialog,
     sendDM,
     addAdms,
-    delAdms
+    delAdms,
+    getChannelName,
+    getPostChannel
 }
