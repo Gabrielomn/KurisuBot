@@ -25,7 +25,9 @@ var isChannel = function(string){
 }
 
 var isAdmin = async (user, workspace) => {
+    console.log(workspace)
     let query = await workspaces.findOne({workspace : workspace})
+    console.log(query)
     return query.adm.includes(user)
 }
 

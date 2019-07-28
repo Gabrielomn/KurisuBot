@@ -42,25 +42,19 @@ let handleInteraction = function(body) {
 }
 
 var handleMessage = function (data){
-    
     if(!piii.has(data.text)){
-
         id = data.user
-        if(tools.isChannel(data.channel)){
-            
+        if(tools.isAdmin(data.user, bot.team.name)){
+            let msg = msgs.msgParaAdmin
+            msg.user = data.user
+            msg.channel = data.channel
+            webClient.chat.postMessage(msg)
         }else{
-            if(tools.isAdmin(data.user)){
-                let msg = msgs.msgParaAdmin
-                msg.user = data.user
-                msg.channel = data.channel
-                webClient.chat.postMessage(msg)
-            }else{
-                let msg = msgs.msgParaAluno
-                msg.user = data.user
-                msg.channel = data.channel
-                webClient.chat.postMessage(msg)
-            }
-        }   
+            let msg = msgs.msgParaAluno
+            msg.user = data.user
+            msg.channel = data.channel
+            webClient.chat.postMessage(msg)
+        }
     }else{
         webClient.chat.postMessage({users: data.user, channel: data.channel, text: "Sem palavrão. PALHAÇO"})
     }

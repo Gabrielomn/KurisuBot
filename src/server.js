@@ -57,7 +57,7 @@ bot.on('start', async () =>{
     'Im ready guysss')
     setInterval(()=>{
     tools.update()
-    }, /*1 * 60 * */ 60 * 1000)
+    }, 20*  60 * 1000)
 })
 
     //Error Handler
