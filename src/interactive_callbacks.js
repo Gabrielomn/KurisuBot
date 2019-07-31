@@ -24,10 +24,6 @@ handleAlunoChoice = (obj) => {
     }
 }
 
-handleAdmins = obj => {
-    //todo
-}
-
 handleEditChoice = obj => {
     if(obj.submission.close_open === "open"){
         handleKeepOpenDoubt(obj)
@@ -93,7 +89,7 @@ handleNewKeyword = obj => {
     }).save().then(() => console.log("Keyword Saved successfully"))
 }
 
-//ATUAL SOBRE DUVIDAS
+//ATUA SOBRE DUVIDAS
 
 handleOpenDoubt = (obj) => {
     keywords.find({'workspace' : obj.team.domain}).then(( res )  => {

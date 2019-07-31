@@ -41,10 +41,11 @@ let handleInteraction = function(body) {
     interactive_callbacks[obj.callback_id](obj)
 }
 
-var handleMessage = function (data){
+var handleMessage = async function (data){
     if(!piii.has(data.text)){
         id = data.user
-        if(tools.isAdmin(data.user, bot.team.name)){
+        let flag = await tools.isAdmin(data.user, bot.team.domain)
+        if(flag){
             let msg = msgs.msgParaAdmin
             msg.user = data.user
             msg.channel = data.channel
