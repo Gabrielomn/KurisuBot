@@ -53,8 +53,6 @@ bot.on('start', async () =>{
 
     await handlers.handleConfiguration()
 
-    bot.postMessageToChannel('general', 
-    'Im ready guysss')
     setInterval(()=>{
     tools.update()
     }, 20*  60 * 1000)
