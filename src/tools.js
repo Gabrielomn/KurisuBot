@@ -30,7 +30,7 @@ var isAdmin = async (user, workspace) => {
     return query.adm.includes(user)
 }
 
-const MINUTESBACK = 3
+const MINUTESBACK = 300
 
 let update = () =>{
     findPendingDoubts(async (err, duvidas) => {
