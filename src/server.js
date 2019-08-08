@@ -36,7 +36,7 @@ app.post('/slack/interact', (req, res) => {
     handlers.handleInteraction(req.body)
     console.log('interaction handled')
     let obj = JSON.parse(req.body.payload)
-    if(obj.callback_id == "command_selection"){
+    if(obj.callback_id == "command_selection" || obj.callback_id == "keyword_selection"){
         res.sendStatus(200)
     }
     res.send()
