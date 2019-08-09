@@ -55,7 +55,7 @@ bot.on('start', async () =>{
 
     setInterval(()=>{
     tools.update()
-    }, 60 * 1000)
+    }, process.env.INTERVAL * 60 * 1000)
 })
 
     //Error Handler
@@ -64,14 +64,13 @@ bot.on('error', (err) => console.log(err));
 
 //Message Handler
 bot.on('message', (data) => {
-    if(data.type !== 'message' || data.channel.charAt(0) !== "D"){
+    if(data.type !== 'message'){
         return;
     }
-   
     if(data.user != bot.user){
         if(data.thread_ts){
             handlers.handleReply(data)
-        }else{
+        }else if(data.channel.charAt(0) == "D"){
             handlers.handleMessage(data)
         }      
     }

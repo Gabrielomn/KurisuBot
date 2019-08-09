@@ -30,7 +30,7 @@ var isAdmin = async (user, workspace) => {
     return query.adm.includes(user)
 }
 
-const MINUTESBACK = 3
+const MINUTESBACK = process.env.DOUBT_DELAY
 
 let update = () =>{
     findPendingDoubts(async (err, duvidas) => {
@@ -124,8 +124,9 @@ var saveDoubt = (ts, tema, msg, id, workspace) => {
     })
 }
 
-var closeDoubt = function(data) {
+var closeDoubt = async (data) => {
     if(data.text == '!close'){
+        const idChannelDuvidas = await getPostChannel()
         axios.get("https://slack.com/api/channels.replies?token=" + acessToken +"&channel=" + idChannelDuvidas + "&thread_ts=" + data.thread_ts).then(res => {
             let resp = new Array()
             for(let i = 1; i < res.data.messages.length-1; i++){
