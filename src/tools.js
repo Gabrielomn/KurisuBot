@@ -30,7 +30,7 @@ var isAdmin = async (user, workspace) => {
     return query.adm.includes(user)
 }
 
-const MINUTESBACK = 300
+const MINUTESBACK = 3
 
 let update = () =>{
     findPendingDoubts(async (err, duvidas) => {
@@ -206,13 +206,11 @@ const getChannelName = (id) => {
 
 const getPostChannel = async () =>{
     let workspace = await workspaces.findOne({workspace:bot.team.domain})
-    console.log(workspace.channelPost)
     return workspace.channelPost
 }
 
 const getNotificationChannel = async () => {
     let workspace = await workspaces.findOne({workspace:bot.team.domain})
-    console.log(workspace.channelNotification)
     return workspace.channelNotification
 }
 

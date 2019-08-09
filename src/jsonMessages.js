@@ -224,15 +224,13 @@ const dialogConfig = {
 				"type": "select",
 				"label": "Canal das dúvidas",
                 "name": "channelPost",
-                "options": [
-                ]
+                "data_source":"conversations"
             },
             {
 				"type": "select",
 				"label": "Canal dos monitores",
                 "name": "channelNotification",
-                "options": [
-                ]
+                "data_source":"conversations"
             }
 		]
 	}

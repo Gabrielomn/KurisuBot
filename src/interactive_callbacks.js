@@ -161,11 +161,8 @@ handleNewDoubtDialog = async (obj) =>{
 }
 
 const handleChannelConfig = async (obj) =>{
-    let channels = await webClient.channels.list()
-    let arr = channels.channels.map((canal) => {return {value : canal.id, label: canal.name}})
+    console.log(webClient.groups.list())
     let msg = JSON.parse(JSON.stringify(msgs.dialogConfig))
-    msg.dialog.elements[0].options = arr
-    msg.dialog.elements[1].options = arr
     msg.trigger_id = obj.trigger_id
 
     webClient.dialog.open(msg).catch(err => {
@@ -174,6 +171,7 @@ const handleChannelConfig = async (obj) =>{
 }
 
 const setChannel = (obj) =>{
+    console.log(obj)
     new workspaces({
         adm : [obj.user.id],
         workspace : obj.team.domain,

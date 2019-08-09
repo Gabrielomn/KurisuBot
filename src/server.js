@@ -55,7 +55,7 @@ bot.on('start', async () =>{
 
     setInterval(()=>{
     tools.update()
-    }, 20*  60 * 1000)
+    }, 60 * 1000)
 })
 
     //Error Handler
@@ -64,8 +64,7 @@ bot.on('error', (err) => console.log(err));
 
 //Message Handler
 bot.on('message', (data) => {
-    
-    if(data.type !== 'message'){
+    if(data.type !== 'message' || data.channel.charAt(0) !== "D"){
         return;
     }
    
