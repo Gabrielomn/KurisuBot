@@ -4,7 +4,7 @@ const webClient = require('./config').slackWeb
 const keywords = require('../models/KeyWord')
 const doubts = require('../models/Doubt')
 const axios = require('axios')
-const acessToken = require('./secrets').oAuth
+const acessToken = process.env.oAuthToken
 const workspaces = require('../models/Workspace')
 
 //TOMADAS DE DECISÃO
